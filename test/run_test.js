@@ -2,7 +2,7 @@ var
 fs = require('fs'),
 path = require("path"),
 RE_JS_FILE=/.*\.js$/i;
-RE_BENCH_FILE=/.*bench.*/i;
+RE_TEST_FILE=/^file-\d*.js/i;
 
 fs.readdir(__dirname, function (err, files) {
 		var 
@@ -19,7 +19,7 @@ fs.readdir(__dirname, function (err, files) {
 			if (file === "run_test.js") {
 				continue;
 			}
-			if (RE_BENCH_FILE.test(file)) {
+			if (RE_TEST_FILE.test(file)) {
 				continue;
 			}	
 			
