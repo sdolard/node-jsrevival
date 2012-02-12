@@ -9,14 +9,17 @@ verbose = false,
 jslint_file,
 jslint_options = '',
 files = [],
-i = 0;
+quiet = false,
+i = 0,
+errorCount = 0,
+onLintCallCount=0;
 
 
 /**
 * Display help
 */
 function displayHelp() {
-	console.log('jslinter [-j jslint_file] [-o jslint_options_file] [-R] [–v] [–h] [–m] [files directories ...] ');
+	console.log('jslinter [-j jslint_file] [-o jslint_options_file] [-R] [–v] [–h] [–m] [–q] files directories ... ');
 	console.log('jslinter: a JSLint cli.');
 	console.log('Options:');
 	console.log('  j: jslint file (overload default).');
@@ -24,16 +27,31 @@ function displayHelp() {
 	console.log('  m: display jslint default option');
 	console.log('  v: verbose mode');
 	console.log('  R: run recursively on directories');
+	console.log('  q: quiet');	
 	console.log('  h: display this help');
+}
+
+function log() {
+	if (quiet) {
+		return;
+	}
+	console.log.apply(console, arguments);
+}
+
+function error() {
+	if (quiet) {
+		return;
+	}
+	console.error.apply(console, arguments);
 }
 
 
 function displayDefaultOption () {
 	var prop; 
-	console.log('JSLint default options:');
+	log('JSLint default options:');
 	for (prop in jsrevival.defaultJSLintOption){
 		if (jsrevival.defaultJSLintOption.hasOwnProperty(prop)) {
-			console.log('  %s: %s', prop, jsrevival.defaultJSLintOption[prop]);
+			log('  %s: %s', prop, jsrevival.defaultJSLintOption[prop]);
 		}
 	}
 }
@@ -54,7 +72,7 @@ for(i = 2; i < process.argv.length; i++) {
 /**
 * Command line options
 */
-optParser = new getopt.BasicParser(':hvmj:o:', process.argv);
+optParser = new getopt.BasicParser(':hvmqj:o:', process.argv);
 while ((opt = optParser.getopt()) !== undefined && !opt.error) {
 	switch(opt.option) {
 	case 'j': //  jslint file
@@ -86,21 +104,37 @@ while ((opt = optParser.getopt()) !== undefined && !opt.error) {
 		process.exit();
 		break;
 		
+	case 'q': // quiet
+		files.shift();
+		quiet = true;
+		break;
+		
+	case '?':
+		error('Invalid or incomplete option');
+		files.shift();
+		break;
+		
+		
 	default:
-		console.error('Invalid or incomplete option');
+		error('Invalid or incomplete option');
 		displayHelp();
-		process.exit();
+		process.exit(1);
 		
 	}
 }
 
+if (files.length === 0) {
+	log('Nothing to lint.');
+	process.exit(1);
+}
 
 if(verbose) {
 	linter.verbose = true;
-	console.log('verbose mode enabled');
+	log('verbose mode enabled');
 }
 
 function onLint(errors, filename) {	
+	onLintCallCount++;
 	var
 	msg= '';
 	if (files.length > 1) {
@@ -123,13 +157,14 @@ function onLint(errors, filename) {
 			//      d         : The fourth detail
 			//  }
 			if (error !== null) {
+				errorCount++;
 				if (error.id === undefined) {
-					console.log(util.format('%s%s', 
+					log(util.format('%s%s', 
 						msg, 
 						error.reason));
 				} else {
 					evidence = error.evidence;
-					console.log(util.format('%s%s line %d(%d): %s "%s"', 
+					log(util.format('%s%s line %d(%d): %s "%s"', 
 						msg,
 						error.id, 
 						error.line, 
@@ -139,11 +174,18 @@ function onLint(errors, filename) {
 				}
 			}
 		}
-		console.log("%s KO", filename);
-		return;
-	} 
-	// No error
-	console.log("%s OK", filename);
+		log("%s KO", filename);
+		
+	} else {
+		// No error
+		log("%s OK", filename);
+	}
+	
+	if (onLintCallCount === files.length) {
+		if (errorCount > 0) {
+			process.exit(1);
+		}
+	}
 }
 
 linter = jsrevival.create();
@@ -153,25 +195,26 @@ if (jslint_options !== ''){
 	var 
 	sandbox = {
 		result: undefined
-    },prop;
+    },
+    prop;
     
     try {
 		vm.runInNewContext('result = '+ jslint_options , sandbox, 'tmp.txt');
     } catch(e) {
-		console.error('!Aborting: jslint option format is not valid.');
+		error('!Aborting: jslint option format is not valid.');
 		process.exit(1);
     }
-	console.log('JSLint default options overload:');
+	log('JSLint default options overload:');
 	for(prop in sandbox.result){
 		if (sandbox.result.hasOwnProperty(prop)) {
 			if (!linter.JSLintOption.hasOwnProperty(prop)) {
-				console.error("  ! unknown property: %s", prop);
+				error("  ! unknown property: %s", prop);
 				process.exit(1);
 			} else if (linter.JSLintOption[prop] !== sandbox.result[prop]) {
-				console.log("  %s: %s", prop, sandbox.result[prop]);
+				log("  %s: %s", prop, sandbox.result[prop]);
 				linter.JSLintOption[prop] = sandbox.result[prop];
 			} else {
-				console.log("  %s: %s is already default value", prop, 
+				log("  %s: %s is already default value", prop, 
 					sandbox.result[prop]);
 			}
 		}
@@ -179,17 +222,23 @@ if (jslint_options !== ''){
 }
 
 linter.on('ready', function() {
+		
 		for (i = 0; i < files.length; i++) {
-			console.log('Running jslint on %s...', files[i]);
+			log('Running jslint on %s...', files[i]);
 			linter.lint({
 					filename: files[i]
 			}, onLint);
 		}
 });
+
+linter.on('end', function() {
+		// TODO
+});
+
 linter.on('error', function(err) {
 		if (err) {
-			console.error("%s (%s)", err.message, err.code);
-			return;
+			error("%s (%s)", err.message, err.code);
+			process.exit(1);
 		}
 		
 });

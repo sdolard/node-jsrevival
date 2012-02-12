@@ -1,20 +1,15 @@
 #!/bin/sh
 
-#lib
-RESULT_TEXT_OUTPUT=$(node bin/jslinter.js -o "{ properties: false }" lib/jsrevival.js)
-RESULT_VALUE_OUTPUT=$?
-echo "$RESULT_TEXT_OUTPUT"
-[ ! $RESULT_VALUE_OUTPUT -eq 0 ] && exit $RESULT_VALUE_OUTPUT 
-
-#bin
-RESULT_TEXT_OUTPUT=$(node bin/jslinter.js -o "{ properties: false }" bin/jslinter.js)
-RESULT_VALUE_OUTPUT=$?
-echo "$RESULT_TEXT_OUTPUT"
-[ ! $RESULT_VALUE_OUTPUT -eq 0 ] && exit $RESULT_VALUE_OUTPUT 
-
 # test
+echo "Running test:"
 RESULT_TEXT_OUTPUT=$(node test/run_test.js)
 RESULT_VALUE_OUTPUT=$?
 echo "$RESULT_TEXT_OUTPUT"
-exit $RESULT_VALUE_OUTPUT 
+[ $RESULT_VALUE_OUTPUT -ne 0 ] && exit $RESULT_VALUE_OUTPUT 
+
+echo "---"
+echo "Self test:"
+#lib
+node bin/jslinter.js -o "{ properties: false }" lib/jsrevival.js bin/jslinter.js
+[ $? -ne 0 ] && exit $? 
 
