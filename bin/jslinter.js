@@ -8,11 +8,12 @@ jsrevival = require('../lib/jsrevival'),
 verbose = false,
 jslint_file,
 jslint_options = '',
-files = [],
+toLint = [],
 quiet = false,
 i = 0,
 errorCount = 0,
-onLintCallCount=0;
+onLintCallCount = 0,
+recursive = false;
 
 
 /**
@@ -31,14 +32,14 @@ function displayHelp() {
 	console.log('  h: display this help');
 }
 
-function log() {
+function _log() {
 	if (quiet) {
 		return;
 	}
 	console.log.apply(console, arguments);
 }
 
-function error() {
+function _error() {
 	if (quiet) {
 		return;
 	}
@@ -48,10 +49,10 @@ function error() {
 
 function displayDefaultOption () {
 	var prop; 
-	log('JSLint default options:');
+	_log('JSLint default options:');
 	for (prop in jsrevival.defaultJSLintOption){
 		if (jsrevival.defaultJSLintOption.hasOwnProperty(prop)) {
-			log('  %s: %s', prop, jsrevival.defaultJSLintOption[prop]);
+			_log('  %s: %s', prop, jsrevival.defaultJSLintOption[prop]);
 		}
 	}
 }
@@ -63,83 +64,84 @@ if (process.argv.length <= 2) {
 }
 
 
-// tmp files array 
+// tmp toLint array 
 for(i = 2; i < process.argv.length; i++) {
-	files.push(process.argv[i]);
+	toLint.push(process.argv[i]);
 }
 
 
 /**
 * Command line options
 */
-optParser = new getopt.BasicParser(':hvmqj:o:', process.argv);
+optParser = new getopt.BasicParser(':hRvmqj:o:', process.argv);
 while ((opt = optParser.getopt()) !== undefined && !opt.error) {
 	switch(opt.option) {
 	case 'j': //  jslint file
-		files.shift();
-		files.shift();
+		toLint.shift();
+		toLint.shift();
 		jslint_file = opt.optarg;
 		break;
 		
 	case 'o': // jslint_options_file
-		files.shift();
-		files.shift();
+		toLint.shift();
+		toLint.shift();
 		jslint_options = opt.optarg;
 		break;
 		
 	case 'v': // verbose
-		files.shift();
+		toLint.shift();
 		verbose = true;
 		break;
 		
 	case 'h': // help
-		files.shift();
+		toLint.shift();
 		displayHelp();
 		process.exit();
 		break;
 		
 	case 'm': // display default options
-		files.shift();
+		toLint.shift();
 		displayDefaultOption();
 		process.exit();
 		break;
 		
 	case 'q': // quiet
-		files.shift();
+		toLint.shift();
 		quiet = true;
 		break;
 		
+	case 'R': // directory recursive parsing
+		toLint.shift();
+		recursive = true;
+		break;
+		
 	case '?':
-		error('Invalid or incomplete option');
-		files.shift();
+		_error('Invalid or incomplete option');
+		toLint.shift();
 		break;
 		
 		
 	default:
-		error('Invalid or incomplete option');
+		_error('Invalid or incomplete option');
 		displayHelp();
 		process.exit(1);
 		
 	}
 }
 
-if (files.length === 0) {
-	log('Nothing to lint.');
+if (toLint.length === 0) {
+	_log('Nothing to lint.');
 	process.exit(1);
 }
 
-if(verbose) {
-	linter.verbose = true;
-	log('verbose mode enabled');
-}
 
 function onLint(errors, filename) {	
 	onLintCallCount++;
 	var
 	msg= '';
-	if (files.length > 1) {
+	//if (toLint.length > 1) {
 		msg = path.basename(filename) + '> ';
-	}
+	//}
 	
 	if (errors.length > 0) {
 		//debugger;
@@ -159,12 +161,12 @@ function onLint(errors, filename) {
 			if (error !== null) {
 				errorCount++;
 				if (error.id === undefined) {
-					log(util.format('%s%s', 
+					_log(util.format('%s%s', 
 						msg, 
 						error.reason));
 				} else {
 					evidence = error.evidence;
-					log(util.format('%s%s line %d(%d): %s "%s"', 
+					_log(util.format('%s%s line %d(%d): %s "%s"', 
 						msg,
 						error.id, 
 						error.line, 
@@ -174,14 +176,15 @@ function onLint(errors, filename) {
 				}
 			}
 		}
-		log("%s KO", filename);
+		_log("%s KO", filename);
 		
 	} else {
 		// No error
-		log("%s OK", filename);
+		_log("%s OK", filename);
 	}
 	
-	if (onLintCallCount === files.length) {
+	// TODO, this do not wirk with -R and directories
+	if (onLintCallCount === toLint.length) {
 		if (errorCount > 0) {
 			process.exit(1);
 		}
@@ -189,6 +192,11 @@ function onLint(errors, filename) {
 }
 
 linter = jsrevival.create();
+
+if(verbose) {
+	linter.verbose = true;
+	_log('verbose mode enabled');
+}
 
 // Default option overload
 if (jslint_options !== ''){
@@ -201,20 +209,20 @@ if (jslint_options !== ''){
     try {
 		vm.runInNewContext('result = '+ jslint_options , sandbox, 'tmp.txt');
     } catch(e) {
-		error('!Aborting: jslint option format is not valid.');
+		_error('!Aborting: jslint option format is not valid.');
 		process.exit(1);
     }
-	log('JSLint default options overload:');
+	_log('JSLint default options overload:');
 	for(prop in sandbox.result){
 		if (sandbox.result.hasOwnProperty(prop)) {
 			if (!linter.JSLintOption.hasOwnProperty(prop)) {
-				error("  ! unknown property: %s", prop);
+				_error("  ! unknown property: %s", prop);
 				process.exit(1);
 			} else if (linter.JSLintOption[prop] !== sandbox.result[prop]) {
-				log("  %s: %s", prop, sandbox.result[prop]);
+				_log("  %s: %s", prop, sandbox.result[prop]);
 				linter.JSLintOption[prop] = sandbox.result[prop];
 			} else {
-				log("  %s: %s is already default value", prop, 
+				_log("  %s: %s is already default value", prop, 
 					sandbox.result[prop]);
 			}
 		}
@@ -222,11 +230,11 @@ if (jslint_options !== ''){
 }
 
 linter.on('ready', function() {
-		
-		for (i = 0; i < files.length; i++) {
-			log('Running jslint on %s...', files[i]);
+		for (i = 0; i < toLint.length; i++) {
+			_log('Running jslint on %s...', toLint[i]);
 			linter.lint({
-					filename: files[i]
+					toLint: toLint[i],
+					recursive: recursive
 			}, onLint);
 		}
 });
@@ -237,7 +245,7 @@ linter.on('end', function() {
 
 linter.on('error', function(err) {
 		if (err) {
-			error("%s (%s)", err.message, err.code);
+			_error("%s (%s)", err.message, err.code);
 			process.exit(1);
 		}
 		
