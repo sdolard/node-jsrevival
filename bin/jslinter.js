@@ -12,7 +12,8 @@ toLint = [],
 quiet = false,
 i = 0,
 errorCount = 0,
-onLintCallCount = 0,
+errorFileCount = 0,
+fileCount = 0,
 recursive = false;
 
 
@@ -45,6 +46,8 @@ function _error() {
 	}
 	console.error.apply(console, arguments);
 }
+
+
 
 
 function displayDefaultOption () {
@@ -136,12 +139,10 @@ if (toLint.length === 0) {
 
 
 function onLint(errors, filename) {	
-	onLintCallCount++;
+	_log('Running jslint on %s...', filename);
+	
 	var
-	msg= '';
-	//if (toLint.length > 1) {
-		msg = path.basename(filename) + '> ';
-	//}
+	msg = path.basename(filename) + '> ';
 	
 	if (errors.length > 0) {
 		//debugger;
@@ -176,19 +177,14 @@ function onLint(errors, filename) {
 				}
 			}
 		}
+		errorFileCount++;
 		_log("%s KO", filename);
 		
 	} else {
 		// No error
 		_log("%s OK", filename);
 	}
-	
-	// TODO, this do not wirk with -R and directories
-	if (onLintCallCount === toLint.length) {
-		if (errorCount > 0) {
-			process.exit(1);
-		}
-	}
+	fileCount++;
 }
 
 linter = jsrevival.create();
@@ -231,7 +227,6 @@ if (jslint_options !== ''){
 
 linter.on('ready', function() {
 		for (i = 0; i < toLint.length; i++) {
-			_log('Running jslint on %s...', toLint[i]);
 			linter.lint({
 					toLint: toLint[i],
 					recursive: recursive
@@ -240,7 +235,15 @@ linter.on('ready', function() {
 });
 
 linter.on('end', function() {
-		// TODO
+		if (errorCount > 0) {
+			_log('%d error%s on %d/%d file%s', errorCount, errorCount > 1 ? 's' : '', errorFileCount, fileCount, fileCount > 1 ? 's' : '');
+			process.exit(1);
+		} else {
+			if (fileCount > 1) {
+					_log('All file%s(%s) OK', fileCount > 1 ? 's' : '', fileCount);
+			}
+		}
+
 });
 
 linter.on('error', function(err) {

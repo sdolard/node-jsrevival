@@ -10,6 +10,6 @@ echo "$RESULT_TEXT_OUTPUT"
 echo "---"
 echo "Self test:"
 #lib
-node bin/jslinter.js -o "{ properties: false }" lib/jsrevival.js bin/jslinter.js
-[ $? -ne 0 ] && exit $? 
+node bin/jslinter.js -o "{ properties: false }" lib/jsrevival.js bin/jslinter.js 
+exit $? 
 
