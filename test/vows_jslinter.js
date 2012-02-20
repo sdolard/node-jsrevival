@@ -1,38 +1,46 @@
-// division-by-zero-test.js
-var vows = require('vows'),
+var 
+vows = require('vows'),
 assert = require('assert'),
-exec = require('child_process').exec;
+exec = require('child_process').exec,
+help = [
+	'jslinter [-j jslint_file] [-o jslint_options_file] [–m] [–v] [-R] [–q] [-s] [-u] [-p prefef] [–h] files directories ... ',
+	'jslinter: a JSLint cli.',
+	'Options:',
+	'  j: jslint file (overload default)',
+	'  o: jslint option (overload default). Ex: -o "unparam: true, vars: false..."',
+	'  m: display jslint default option',
+	'  v: verbose mode',
+	'  R: run recursively on directories',
+	'  q: quiet. Ex: to use jslinter in shell script',
+	'  s: stop on first error',
+	'  u: update jslint online.',
+	'  p: predefined names, which will be used to declare global variables',
+	'  h: display this help',
+	'' // This last line is required
+].join('\n');
 
 function run_jslinter(option, callback) {
 	exec('node ' + __dirname + '/../bin/jslinter.js ' + option, callback);
 }
 
-// Create a Test Suite
-vows.describe('jslinter option').addBatch({
+
+exports.suite1 = vows.describe('jslinter option').addBatch({
 		'When passing no option': {
             topic: function () {
             	run_jslinter('', this.callback);
             },
-            'help should be displayed to stdout': function (error, stdout, stderr) {
-            	var ref = [
-            		'jslinter [-j jslint_file] [-o jslint_options_file] [–m] [–v] [-R] [–q] [-s] [-u] [-p prefef] [–h] files directories ... ',
-            		'jslinter: a JSLint cli.',
-            		'Options:',
-            		'  j: jslint file (overload default)',
-            		'  o: jslint option (overload default). Ex: -o "unparam: true, vars: false..."',
-            		'  m: display jslint default option',
-            		'  v: verbose mode',
-            		'  R: run recursively on directories',
-            		'  q: quiet. Ex: to use jslinter in shell script',
-            		'  s: stop on first error',
-            		'  u: update jslint online.',
-            		'  p: predefined names, which will be used to declare global variables',
-            		'  h: display this help',
-            		'' // This last line is required
-            	].join('\n');
-            	
+            'help should be displayed to stdout and exit code should equal 1': function (error, stdout, stderr) {
             	assert.strictEqual(error.code, 1);
-            	assert.strictEqual(stdout, ref);
+            	assert.strictEqual(stdout, help);
+            	assert.strictEqual(stderr, '');
+            }
+        },'When passing -h option': {
+            topic: function () {
+            	run_jslinter('-h', this.callback);
+            },
+            'help should be displayed to stdout': function (error, stdout, stderr) {
+            	assert.isNull(error);
+            	assert.strictEqual(stdout, help);
             	assert.strictEqual(stderr, '');
             }
         },
@@ -40,7 +48,7 @@ vows.describe('jslinter option').addBatch({
             topic: function () {
             	run_jslinter('-m', this.callback);
             },
-            'option should be displayed to stdout': function (error, stdout, stderr) {
+            'jslint default option should be displayed to stdout': function (error, stdout, stderr) {
             	var ref = [
             		'JSLint default options:',
             		'  anon: true # if the space may be omitted in anonymous function declarations',
@@ -80,11 +88,10 @@ vows.describe('jslinter option').addBatch({
             		'' // This last line is required
             	].join('\n');
             	
-            	assert.strictEqual(error, null);
+            	assert.isNull(error);
             	assert.strictEqual(stdout, ref);
             	assert.strictEqual(stderr, '');
             }
         }
-        
-}).run(); // Run it
+});
 

@@ -1,15 +1,4 @@
 #!/bin/sh
-
-# test
-echo "Running test:"
-RESULT_TEXT_OUTPUT=$(node test/run_test.js)
-RESULT_VALUE_OUTPUT=$?
-echo "$RESULT_TEXT_OUTPUT"
-[ $RESULT_VALUE_OUTPUT -ne 0 ] && exit $RESULT_VALUE_OUTPUT 
-
-echo "---"
-echo "Self test:"
-#lib
-node bin/jslinter.js -o "{ properties: false }" lib/jsrevival.js bin/jslinter.js 
+vows test/* --spec
 exit $? 
 

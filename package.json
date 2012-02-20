@@ -9,13 +9,14 @@
   },
   "main": "lib/jsrevival",
   "scripts": {
-    "test": "test/run_test.js"
+    "test": "vows test/* --spec"
   },
   "engines": {
     "node": "~0.6.8"
   },
   "dependencies": {
-    "posix-getopt": "0.0.x"
-    },
+    "posix-getopt": "0.0.x",
+    "vows": "0.6.x"
+  },
   "devDependencies": {}
 }
