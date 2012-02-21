@@ -1,4 +1,4 @@
 #!/bin/sh
-vows test/* --spec
+vows test/vows* --spec
 exit $? 
 

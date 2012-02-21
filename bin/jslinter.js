@@ -27,7 +27,7 @@ fileCount = 0;
 * Display help
 */
 function displayHelp() {
-	console.log('jslinter [-j jslint_file] [-o jslint_options_file] [–m] [–v] [-R] [–q] [-s] [-u] [-p prefef] [–h] files directories ... ');
+	console.log('jslinter [-j jslint_file] [-o jslint_options_file] [–m] [–v] [-R] [–q] [-u] [-p prefef] [–h] files directories ... ');
 	console.log('jslinter: a JSLint cli.');
 	console.log('Options:');
 	console.log('  j: jslint file (overload default)');
@@ -36,7 +36,6 @@ function displayHelp() {
 	console.log('  v: verbose mode');
 	console.log('  R: run recursively on directories');
 	console.log('  q: quiet. Ex: to use jslinter in shell script');	
-	console.log('  s: stop on first error');		
 	console.log('  u: update jslint online.'); // https://raw.github.com/douglascrockford/JSLint/master/jslint.js
 	console.log('  p: predefined names, which will be used to declare global variables');// predef, 
 	// can be an array of names, which will be used to declare global variables,
@@ -99,7 +98,7 @@ while ((opt = optParser.getopt()) !== undefined && !opt.error) {
 	case 'o': // jslint_options_file
 		toLint.shift();
 		toLint.shift();
-		jslint_options = '{'+opt.optarg+'}';
+		jslint_options = '{' + opt.optarg + '}';
 		break;
 		
 	case 'v': // verbose
@@ -212,7 +211,8 @@ linter.on('ready', function(edition) {
 });
 
 linter.on('lint', function onLint(errors, filename) {	
-		_log('Running jslint on %s...', filename);
+		relativeFilename = path.relative(__dirname, filename);
+		_log('Running jslint on %s...', relativeFilename);
 		
 		var
 		msg = path.basename(filename) + '> ';
@@ -251,11 +251,11 @@ linter.on('lint', function onLint(errors, filename) {
 				}
 			}
 			errorFileCount++;
-			_log("%s KO", filename);
+			_log("%s KO", relativeFilename);
 			
 		} else {
 			// No error
-			_log("%s OK", filename);
+			_log("%s OK", relativeFilename);
 		}
 		fileCount++;
 });

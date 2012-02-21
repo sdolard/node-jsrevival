@@ -9,7 +9,7 @@
   },
   "main": "lib/jsrevival",
   "scripts": {
-    "test": "vows test/* --spec"
+    "test": "vows test/vows* --spec"
   },
   "engines": {
     "node": "~0.6.8"
