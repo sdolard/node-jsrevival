@@ -1,4 +1,4 @@
-//#!/usr/bin/env node
+#!/usr/bin/env node
 var
 path = require('path'), 
 util = require('util'),
@@ -26,7 +26,7 @@ fileCount = 0;
 * Display help
 */
 function displayHelp() {
-	console.log('jslinter [-j jslint_file] [-o jslint_options_file] [-s] [–m] [–v] [-R] [–q] [-u] [-p prefef] [–h] files directories ... ');
+	console.log('jslinter [-j jslint_file] [-o jslint_options_file] [-s] [–m] [–v] [-R] [–q] [-p prefef] [–h] files directories ... ');
 	console.log('jslinter: a JSLint cli.');
 	console.log('Options:');
 	console.log('  j: jslint file (overload default)');
@@ -36,7 +36,7 @@ function displayHelp() {
 	console.log('  R: run recursively on directories');
 	console.log('  s: stop on first file error');
 	console.log('  q: quiet. Ex: to use jslinter in shell script');	
-	console.log('  u: update jslint online'); // https://raw.github.com/douglascrockford/JSLint/master/jslint.js
+	//console.log('  u: update jslint online'); // https://raw.github.com/douglascrockford/JSLint/master/jslint.js
 	console.log('  p: predefined names, which will be used to declare global variables. Ex: -p "foo, bar"');// predef, 
 	// can be an array of names, which will be used to declare global variables,
 	// or an object whose keys are used as global names, with a boolean value
@@ -145,11 +145,6 @@ while ((opt = optParser.getopt()) !== undefined && !opt.error) {
 	case 's': // stop on first error
 		toLint.shift();
 		_log('Stop on first file error enabled');
-		stopOnFirstError = true;
-		break;
-
-	case 'u': // update jslint online
-		toLint.shift();
 		stopOnFirstError = true;
 		break;
 		

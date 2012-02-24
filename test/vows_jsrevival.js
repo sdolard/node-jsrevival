@@ -31,7 +31,7 @@ exports.suite1 = vows.describe('jsrevival lib').addBatch({
 	topic: function () {
 		return EEND_COUNT;
 	},
-	'`end` event has been be called only one time': function (topic) {
+	'`end` event called only one time': function (topic) {
 		assert.strictEqual(topic, 1);
 	}
 }

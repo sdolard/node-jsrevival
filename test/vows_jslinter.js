@@ -4,7 +4,7 @@ assert = require('assert'),
 util = require('util'),
 exec = require('child_process').exec,
 help = [
-	'jslinter [-j jslint_file] [-o jslint_options_file] [-s] [–m] [–v] [-R] [–q] [-u] [-p prefef] [–h] files directories ... ',
+	'jslinter [-j jslint_file] [-o jslint_options_file] [-s] [–m] [–v] [-R] [–q] [-p prefef] [–h] files directories ... ',
 	'jslinter: a JSLint cli.',
 	'Options:',
 	'  j: jslint file (overload default)',
@@ -14,7 +14,7 @@ help = [
 	'  R: run recursively on directories',
 	'  s: stop on first file error',
 	'  q: quiet. Ex: to use jslinter in shell script',
-	'  u: update jslint online',
+//	'  u: update jslint online',
 	'  p: predefined names, which will be used to declare global variables. Ex: -p "foo, bar"',
 	'  h: display this help',
 	'' // This last line is required
@@ -167,7 +167,7 @@ exports.suite1 = vows.describe('jslinter option').addBatch({
 			topic: function () {
 				run_jslinter('-j ' + __dirname + '/jslint.js -R '+ __dirname +'/Rtest', this.callback);
 			},
-			'jslinter read directories recursivly': function (error, stdout, stderr) {
+			'jslinter read directories recursively': function (error, stdout, stderr) {
 				assert.strictEqual(error.code, 1);
 				assert.strictEqual(stdout, jslintDirectoryR);
 				assert.strictEqual(stderr, '');
@@ -177,7 +177,7 @@ exports.suite1 = vows.describe('jslinter option').addBatch({
 			topic: function () {
 				run_jslinter('-j ' + __dirname + '/jslint.js ' + __dirname +'/Rtest', this.callback);
 			},
-			'jslinter doesn`t read directories recursivly': function (error, stdout, stderr) {
+			'jslinter doesn`t read directories recursively': function (error, stdout, stderr) {
 				assert.isNull(error);
 				assert.strictEqual(stdout, jslintDirectory);
 				assert.strictEqual(stderr, '');
@@ -202,7 +202,7 @@ exports.suite1 = vows.describe('jslinter option').addBatch({
 				assert.strictEqual(stdout, jslintOptionOverloadWarnings);
 				assert.strictEqual(stderr, '');
 			}
-		},
+		}/*,
 		'When running jslinter with -u option': {
 			topic: function () {
 				return "todo";
@@ -210,7 +210,7 @@ exports.suite1 = vows.describe('jslinter option').addBatch({
 			'TODO: it`s dl last jslint from github': function (topic) {
 				
 			}
-		},
+		}*/,
 		'When running jslinter with -p option': {
 			topic: function () {
 				run_jslinter('-j ' + __dirname + '/jslint.js -o "undef: false" -p "b,c" '+ __dirname + '/Rtest', this.callback);
