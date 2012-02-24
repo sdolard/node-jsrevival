@@ -76,10 +76,10 @@ linter.on('lint', function onLint(errors, filename) {
 */
 ```
 
-### JSRevival.lint methode 
+### JSRevival.lint method
 ```
 /**
-* methode
+* method
 * @param {string} toLint: a file, a directory
 */
 ```
