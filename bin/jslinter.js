@@ -17,7 +17,7 @@ verbose = false,
 recursive = false,
 stopOnFirstError = false,
 linter,
-
+predefVar = '';
 errorCount = 0,
 errorFileCount = 0,
 fileCount = 0;
@@ -27,7 +27,7 @@ fileCount = 0;
 * Display help
 */
 function displayHelp() {
-	console.log('jslinter [-j jslint_file] [-o jslint_options_file] [–m] [–v] [-R] [–q] [-u] [-p prefef] [–h] files directories ... ');
+	console.log('jslinter [-j jslint_file] [-o jslint_options_file] [-s] [–m] [–v] [-R] [–q] [-u] [-p prefef] [–h] files directories ... ');
 	console.log('jslinter: a JSLint cli.');
 	console.log('Options:');
 	console.log('  j: jslint file (overload default)');
@@ -35,9 +35,10 @@ function displayHelp() {
 	console.log('  m: display jslint default option');
 	console.log('  v: verbose mode');
 	console.log('  R: run recursively on directories');
+	console.log('  s: stop on first file error');
 	console.log('  q: quiet. Ex: to use jslinter in shell script');	
-	console.log('  u: update jslint online.'); // https://raw.github.com/douglascrockford/JSLint/master/jslint.js
-	console.log('  p: predefined names, which will be used to declare global variables');// predef, 
+	console.log('  u: update jslint online'); // https://raw.github.com/douglascrockford/JSLint/master/jslint.js
+	console.log('  p: predefined names, which will be used to declare global variables. Ex: -p "foo, bar"');// predef, 
 	// can be an array of names, which will be used to declare global variables,
 	// or an object whose keys are used as global names, with a boolean value
 	// that determines if they are assignable.
@@ -86,7 +87,7 @@ function displayDefaultOption () {
 
 
 // Command line options
-optParser = new getopt.BasicParser(':hRvmqsj:o:', process.argv);
+optParser = new getopt.BasicParser(':hRvmqsj:p:o:', process.argv);
 while ((opt = optParser.getopt()) !== undefined && !opt.error) {
 	switch(opt.option) {
 	case 'j': //  jslint file
@@ -98,7 +99,23 @@ while ((opt = optParser.getopt()) !== undefined && !opt.error) {
 	case 'o': // jslint_options_file
 		toLint.shift();
 		toLint.shift();
-		jslint_options = '{' + opt.optarg + '}';
+		if (jslint_options.length !== 0) {
+			jslint_options += ',';
+		}
+		jslint_options += opt.optarg;
+		
+		break;
+		
+	case 'p': // jslint_options_file
+		toLint.shift();
+		toLint.shift();
+		if (jslint_options.length !== 0) {
+			jslint_options += ',';
+		}
+		predefVar = opt.optarg.split(',');
+		predefVar.join("','");
+		jslint_options += "predef: ['" + opt.optarg + "']";
+		
 		break;
 		
 	case 'v': // verbose
@@ -130,7 +147,7 @@ while ((opt = optParser.getopt()) !== undefined && !opt.error) {
 		
 	case 's': // stop on first error
 		toLint.shift();
-		_log('Stop on first error enabled');
+		_log('Stop on first file error enabled');
 		stopOnFirstError = true;
 		break;
 
@@ -159,6 +176,7 @@ if(verbose) {
 }
 
 
+
 // Linter ctor
 linter = jsrevival.create({
 		recursive: recursive,
@@ -167,12 +185,9 @@ linter = jsrevival.create({
 		verbose: verbose
 });
 
-// Default option overload
-// Must be done after jsrevival ctor
-if (stopOnFirstError) {
-	linter.JSLintOption.maxerr = 1;
-}
 if (jslint_options !== ''){
+	// Set from -o and -p option
+	jslint_options = '{' + jslint_options + '}';
 	var 
 	sandbox = {
 		result: undefined
@@ -181,14 +196,16 @@ if (jslint_options !== ''){
 	
 	try {
 		vm.runInNewContext('result = '+ jslint_options , sandbox, 'tmp.txt');
+		
 	} catch(e) {
+		_log('jslint_options: %s', jslint_options);
 		_error('!Aborting: jslint option format is not valid.');
 		process.exit(1);
 	}
 	_log('JSLint default options overload:');
 	for(prop in sandbox.result){
 		if (sandbox.result.hasOwnProperty(prop)) {
-			if (!linter.JSLintOption.hasOwnProperty(prop)) {
+			if (!linter.JSLintOption.hasOwnProperty(prop) && prop !== "predef") {
 				_error("  ! unknown property: %s", prop);
 				process.exit(1);
 			} else if (linter.JSLintOption[prop] !== sandbox.result[prop]) {

@@ -1,9 +1,10 @@
 var 
 vows = require('vows'),
 assert = require('assert'),
+util = require('util'),
 exec = require('child_process').exec,
 help = [
-	'jslinter [-j jslint_file] [-o jslint_options_file] [–m] [–v] [-R] [–q] [-u] [-p prefef] [–h] files directories ... ',
+	'jslinter [-j jslint_file] [-o jslint_options_file] [-s] [–m] [–v] [-R] [–q] [-u] [-p prefef] [–h] files directories ... ',
 	'jslinter: a JSLint cli.',
 	'Options:',
 	'  j: jslint file (overload default)',
@@ -11,9 +12,10 @@ help = [
 	'  m: display jslint default option',
 	'  v: verbose mode',
 	'  R: run recursively on directories',
+	'  s: stop on first file error',
 	'  q: quiet. Ex: to use jslinter in shell script',
-	'  u: update jslint online.',
-	'  p: predefined names, which will be used to declare global variables',
+	'  u: update jslint online',
+	'  p: predefined names, which will be used to declare global variables. Ex: -p "foo, bar"',
 	'  h: display this help',
 	'' // This last line is required
 ].join('\n'),
@@ -68,10 +70,14 @@ jslintDirectoryR = [
 	'Running jslint on ../test/Rtest/test.js...',
 	'../test/Rtest/test.js OK',
 	'Running jslint on ../test/Rtest/A/testA.js...',
-	'../test/Rtest/A/testA.js OK',
+	'testA.js> (error) line 1(6): Expected \';\' and instead saw \'(end)\'. "a = 1"',
+	'testA.js> Stopping.  (100% scanned).',
+	'../test/Rtest/A/testA.js KO',
 	'Running jslint on ../test/Rtest/B/testB.js...',
-	'../test/Rtest/B/testB.js OK',
-	'All files(3) OK',
+	'testB.js> (error) line 1(6): Expected \';\' and instead saw \'(end)\'. "b = 2"',
+	'testB.js> Stopping.  (100% scanned).',
+	'../test/Rtest/B/testB.js KO',
+	'4 errors on 2/3 files',
 	'' // This last line is required
 ].join('\n'),
 jslintDirectory = [
@@ -87,6 +93,27 @@ jslintOptionOverloadWarnings = [
 	'JSLINT edition: 2012-01-25',
 	'Running jslint on ../test/vows_jslinter.js...',
 	'../test/vows_jslinter.js OK',
+	'' // This last line is required
+].join('\n'),
+jslintSOption = [
+	'Stop on first file error enabled',
+	'JSLINT edition: 2012-01-25',
+	'Running jslint on ../test/Rtest/test.js...',
+	'../test/Rtest/test.js OK',
+	'Running jslint on ../test/Rtest/A/testA.js...',
+	'testA.js> (error) line 1(6): Expected \';\' and instead saw \'(end)\'. "a = 1"',
+	'testA.js> Stopping.  (100% scanned).',
+	'../test/Rtest/A/testA.js KO',
+	'2 errors on 1/2 files',
+	'' // This last line is required
+].join('\n'),
+jslintPOption = [
+	'JSLint default options overload:',
+	'  undef: false',
+	'  predef: b',
+	'JSLINT edition: 2012-01-25',
+	'Running jslint on ../test/Rtest/test.js...',
+	'../test/Rtest/test.js OK',
 	'' // This last line is required
 ].join('\n');
 
@@ -136,12 +163,12 @@ exports.suite1 = vows.describe('jslinter option').addBatch({
 				assert.strictEqual(stderr, '');
 			}
 		},
-		'When passing a directory with -R option': {
+		'When passing a directory with -R option on erroneous files': {
 			topic: function () {
 				run_jslinter('-j ' + __dirname + '/jslint.js -R '+ __dirname +'/Rtest', this.callback);
 			},
 			'jslinter read directories recursivly': function (error, stdout, stderr) {
-				assert.isNull(error);
+				assert.strictEqual(error.code, 1);
 				assert.strictEqual(stdout, jslintDirectoryR);
 				assert.strictEqual(stderr, '');
 			}
@@ -186,10 +213,23 @@ exports.suite1 = vows.describe('jslinter option').addBatch({
 		},
 		'When running jslinter with -p option': {
 			topic: function () {
-				return "todo";
+				run_jslinter('-j ' + __dirname + '/jslint.js -o "undef: false" -p "b" '+ __dirname + '/Rtest', this.callback);
 			},
-			'TODO: predefined names, which will be used to declare global variables': function (topic) {
+			'predefined names, which will be used to declare global variables':function (error, stdout, stderr) {
+				assert.isNull(error);
+				assert.strictEqual(stdout, jslintPOption);
+				assert.strictEqual(stderr, '');
+			}
+		},
+		'When running jslinter with -s option': {
+			topic: function () {
+				run_jslinter('-j ' + __dirname + '/jslint.js -R -s '+ __dirname + '/Rtest', this.callback);
 				
+			},
+			'it stop on first file error': function (error, stdout, stderr) {
+				assert.strictEqual(error.code, 1);
+				assert.strictEqual(stdout, jslintSOption);
+				assert.strictEqual(stderr, '');
 			}
 		}
 		
