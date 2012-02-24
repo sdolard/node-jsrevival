@@ -2,12 +2,20 @@
   "author": "Sébastien Dolard <sdolard@gmail.com>",
   "name": "jsrevival",
   "version": "0.0.1",
-  "homepage": "https://github.com/sdolard/node-jsrevival",
+  "homepage": "https://github.com/sdolard/node-jsrevival",  
+  "keywords": [
+    "jslint",
+    "linter",
+    "cli"
+  ],
   "repository": {
     "type": "git",
     "url": "git://github.com/sdolard/node-jsrevival.git"
   },
   "main": "lib/jsrevival",
+  "bin": {
+    "jslinter": "./bin/jslinter.js"
+  }
   "scripts": {
     "test": "vows test/vows* --spec"
   },
