@@ -110,7 +110,7 @@ jslintSOption = [
 jslintPOption = [
 	'JSLint default options overload:',
 	'  undef: false',
-	'  predef: b',
+	'  predef: b,c',
 	'JSLINT edition: 2012-01-25',
 	'Running jslint on ../test/Rtest/test.js...',
 	'../test/Rtest/test.js OK',
@@ -213,7 +213,7 @@ exports.suite1 = vows.describe('jslinter option').addBatch({
 		},
 		'When running jslinter with -p option': {
 			topic: function () {
-				run_jslinter('-j ' + __dirname + '/jslint.js -o "undef: false" -p "b" '+ __dirname + '/Rtest', this.callback);
+				run_jslinter('-j ' + __dirname + '/jslint.js -o "undef: false" -p "b,c" '+ __dirname + '/Rtest', this.callback);
 			},
 			'predefined names, which will be used to declare global variables':function (error, stdout, stderr) {
 				assert.isNull(error);

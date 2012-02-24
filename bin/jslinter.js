@@ -17,7 +17,6 @@ verbose = false,
 recursive = false,
 stopOnFirstError = false,
 linter,
-predefVar = '';
 errorCount = 0,
 errorFileCount = 0,
 fileCount = 0;
@@ -112,9 +111,7 @@ while ((opt = optParser.getopt()) !== undefined && !opt.error) {
 		if (jslint_options.length !== 0) {
 			jslint_options += ',';
 		}
-		predefVar = opt.optarg.split(',');
-		predefVar.join("','");
-		jslint_options += "predef: ['" + opt.optarg + "']";
+		jslint_options += "predef: ['" + opt.optarg.split(',').join("','") + "']";
 		
 		break;
 		
