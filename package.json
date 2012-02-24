@@ -1,8 +1,9 @@
 {
   "author": "Sébastien Dolard <sdolard@gmail.com>",
   "name": "jsrevival",
+  "description": "A javascript lib and cli linter using JSLint",
   "version": "0.0.1",
-  "homepage": "https://github.com/sdolard/node-jsrevival",  
+  "homepage": "https://github.com/sdolard/node-jsrevival",
   "keywords": [
     "jslint",
     "linter",
@@ -12,19 +13,19 @@
     "type": "git",
     "url": "git://github.com/sdolard/node-jsrevival.git"
   },
-  "main": "lib/jsrevival",
-  "bin": {
-    "jslinter": "./bin/jslinter.js"
-  }
   "scripts": {
     "test": "vows test/vows* --spec"
   },
+  "bin": {
+    "jslinter": "./bin/jslinter.js"
+  },
   "engines": {
-    "node": "~0.6.8"
+    "node": "~0.6.10"
   },
   "dependencies": {
     "posix-getopt": "0.0.x",
     "vows": "0.6.x"
   },
-  "devDependencies": {}
+  "devDependencies": {},
+  "optionalDependencies": {}
 }
