@@ -1,4 +1,4 @@
-# node-jsrevival
+# node-jsrevival [![Build Status](https://secure.travis-ci.org/sdolard/node-jsrevival.png?branch=master)](http://travis-ci.org/sdolard/node-jsrevival)
 A javascript lib and cli linter using JSLint
 
 
