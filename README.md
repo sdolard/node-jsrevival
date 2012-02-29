@@ -36,7 +36,7 @@ Options:
 
 ```
 
-### Basic 
+### Lib: basic 
 ```javascript
 var
 jsrevival = require('../lib/jsrevival'),
@@ -69,9 +69,9 @@ linter.on('lint', function onLint(errors, filename) {
 * @params [{object}] config.JSLintOption
 * @params [{boolean}]config.recursive. Default to false. Only valid for directories.
 * @params [{boolean}] config.stopOnFirstError. Default to false.
-* @event ready({string} JSLINT edition)
-* @event lint({array} errors, {string} filepath)
-* @event end
+* @event ready({string} JSLINT edition) // class has load jslint.js > lint method can be called there
+* @event lint({array} errors, {string} filepath) // lint what eve you whant
+* @event end // there is no more things to lint
 * @event error({Error} err) 
 */
 ```
