@@ -220,7 +220,7 @@ linter.on('ready', function(edition) {
 });
 
 linter.on('lint', function onLint(errors, filename) {	
-    relativeFilename = path.relative(__dirname, filename);
+    relativeFilename = path.relative(process.cwd(), filename);
     _log('Running jslint on %s...', relativeFilename);
     
     var

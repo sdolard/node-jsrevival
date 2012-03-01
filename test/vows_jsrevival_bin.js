@@ -61,29 +61,29 @@ jslintJOption = [
     'JSLint default options overload:',
     '  properties: false',
     'JSLINT edition: 2012-01-25',
-    'Running jslint on ../test/vows_jsrevival_bin.js...',
-    '../test/vows_jsrevival_bin.js OK',
+    'Running jslint on test/vows_jsrevival_bin.js...',
+    'test/vows_jsrevival_bin.js OK',
     '' // This last line is required
 ].join('\n'),
 jslintDirectoryR = [
     'JSLINT edition: 2012-01-25',
-    'Running jslint on ../test/Rtest/test.js...',
-    '../test/Rtest/test.js OK',
-    'Running jslint on ../test/Rtest/A/testA.js...',
+    'Running jslint on test/Rtest/test.js...',
+    'test/Rtest/test.js OK',
+    'Running jslint on test/Rtest/A/testA.js...',
     'testA.js> (error) line 1(6): Expected \';\' and instead saw \'(end)\'. "a = 1"',
     'testA.js> Stopping.  (100% scanned).',
-    '../test/Rtest/A/testA.js KO',
-    'Running jslint on ../test/Rtest/B/testB.js...',
+    'test/Rtest/A/testA.js KO',
+    'Running jslint on test/Rtest/B/testB.js...',
     'testB.js> (error) line 1(6): Expected \';\' and instead saw \'(end)\'. "b = 2"',
     'testB.js> Stopping.  (100% scanned).',
-    '../test/Rtest/B/testB.js KO',
+    'test/Rtest/B/testB.js KO',
     '4 errors on 2/3 files',
     '' // This last line is required
 ].join('\n'),
 jslintDirectory = [
     'JSLINT edition: 2012-01-25',
-    'Running jslint on ../test/Rtest/test.js...',
-    '../test/Rtest/test.js OK',
+    'Running jslint on test/Rtest/test.js...',
+    'test/Rtest/test.js OK',
     '' // This last line is required
 ].join('\n'),
 jslintOptionOverloadWarnings = [
@@ -91,19 +91,19 @@ jslintOptionOverloadWarnings = [
     '  properties: false',
     '  confusion: true is already default value',
     'JSLINT edition: 2012-01-25',
-    'Running jslint on ../test/vows_jsrevival_bin.js...',
-    '../test/vows_jsrevival_bin.js OK',
+    'Running jslint on test/vows_jsrevival_bin.js...',
+    'test/vows_jsrevival_bin.js OK',
     '' // This last line is required
 ].join('\n'),
 jslintSOption = [
     'Stop on first file error enabled',
     'JSLINT edition: 2012-01-25',
-    'Running jslint on ../test/Rtest/test.js...',
-    '../test/Rtest/test.js OK',
-    'Running jslint on ../test/Rtest/A/testA.js...',
+    'Running jslint on test/Rtest/test.js...',
+    'test/Rtest/test.js OK',
+    'Running jslint on test/Rtest/A/testA.js...',
     'testA.js> (error) line 1(6): Expected \';\' and instead saw \'(end)\'. "a = 1"',
     'testA.js> Stopping.  (100% scanned).',
-    '../test/Rtest/A/testA.js KO',
+    'test/Rtest/A/testA.js KO',
     '2 errors on 1/2 files',
     '' // This last line is required
 ].join('\n'),
@@ -112,8 +112,8 @@ jslintPOption = [
     '  undef: false',
     '  predef: b,c',
     'JSLINT edition: 2012-01-25',
-    'Running jslint on ../test/Rtest/test.js...',
-    '../test/Rtest/test.js OK',
+    'Running jslint on test/Rtest/test.js...',
+    'test/Rtest/test.js OK',
     '' // This last line is required
 ].join('\n');
 

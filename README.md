@@ -21,8 +21,8 @@ curl http://npmjs.org/install.sh || sh
 ## Usage
 ### CLI
 ```
-jslinter [-j jslint_file] [-o jslint_options_file] [-s] [–m] [–v] [-R] [–q] [-p prefef] [–h] files directories ... 
-jslinter: a JSLint cli.
+jsrevival [-j jslint_file] [-o jslint_options_file] [-s] [–m] [–v] [-R] [–q] [-p prefef] [–h] files directories ... 
+jsrevival: a JSLint cli.
 Options:
   j: jslint file (overload default)
   o: jslint option (overload default). Ex: -o "unparam: true, vars: false..."
@@ -30,7 +30,7 @@ Options:
   v: verbose mode
   R: run recursively on directories
   s: stop on first file error
-  q: quiet. Ex: to use jslinter in shell script
+  q: quiet. Ex: to use jsrevival in shell script
   p: predefined names, which will be used to declare global variables. Ex: -p "foo, bar"
   h: display this help
 
@@ -54,7 +54,7 @@ linter.on('lint', function onLint(errors, filename) {
 
 ### Examples
 * examples/basic.js
-* bin/jslinter.js
+* bin/jsrevival.js
 
 
 ## Exports 
