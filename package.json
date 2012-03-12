@@ -20,7 +20,7 @@
     "jsrevival": "./bin/jsrevival.js"
   },
   "engines": {
-    "node": "~0.6.10"
+    "node": ">= 0.6.0"
   },
   "dependencies": {
     "posix-getopt": "0.0.x",

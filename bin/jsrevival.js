@@ -23,8 +23,8 @@ fileCount = 0;
 
 
 /**
- * Display help
- */
+* Display help
+*/
 function displayHelp() {
     console.log('jsrevival [-j jslint_file] [-o jslint_options_file] [-s] [–m] [–v] [-R] [–q] [-p prefef] [–h] files directories ... ');
     console.log('jsrevival: a JSLint cli.');
@@ -59,7 +59,7 @@ for(i = 2; i < process.argv.length; i++) {
 // Log
 function _log() {
     if (quiet) {
-	return;
+    	return;
     }
     console.log.apply(console, arguments);
 }
@@ -67,7 +67,7 @@ function _log() {
 // Error log
 function _error() {
     if (quiet) {
-	return;
+    	return;
     }
     console.error.apply(console, arguments);
 }
@@ -77,9 +77,9 @@ function displayDefaultOption () {
     var prop; 
     _log('JSLint default options:');
     for (prop in jsrevival.defaultJSLintOption){
-	if (jsrevival.defaultJSLintOption.hasOwnProperty(prop)) {
-	    _log('  %s: %s # %s', prop, jsrevival.defaultJSLintOption[prop], jsrevival.defaultJSLintOptionMsg[prop]);
-	}
+    	if (jsrevival.defaultJSLintOption.hasOwnProperty(prop)) {
+    		_log('  %s: %s # %s', prop, jsrevival.defaultJSLintOption[prop], jsrevival.defaultJSLintOptionMsg[prop]);
+    	}
     }
 }
 
@@ -90,68 +90,68 @@ optParser = new getopt.BasicParser(':hRvmqsj:p:o:', process.argv);
 while ((opt = optParser.getopt()) !== undefined && !opt.error) {
     switch(opt.option) {
     case 'j': //  jslint file
-	toLint.shift();
-	toLint.shift();
-	jslint_file = opt.optarg;
-	break;
-	
+    	toLint.shift();
+    	toLint.shift();
+    	jslint_file = opt.optarg;
+    	break;
+    	
     case 'o': // jslint_options_file
-	toLint.shift();
-	toLint.shift();
-	if (jslint_options.length !== 0) {
-	    jslint_options += ',';
-	}
-	jslint_options += opt.optarg;
-	
-	break;
-	
+    	toLint.shift();
+    	toLint.shift();
+    	if (jslint_options.length !== 0) {
+    		jslint_options += ',';
+    	}
+    	jslint_options += opt.optarg;
+    	
+    	break;
+    	
     case 'p': // jslint_options_file
-	toLint.shift();
-	toLint.shift();
-	if (jslint_options.length !== 0) {
-	    jslint_options += ',';
-	}
-	jslint_options += "predef: ['" + opt.optarg.split(',').join("','") + "']";
-	
-	break;
-	
+    	toLint.shift();
+    	toLint.shift();
+    	if (jslint_options.length !== 0) {
+    		jslint_options += ',';
+    	}
+    	jslint_options += "predef: ['" + opt.optarg.split(',').join("','") + "']";
+    	
+    	break;
+    	
     case 'v': // verbose
-	toLint.shift();
-	verbose = true;
-	break;
-	
+    	toLint.shift();
+    	verbose = true;
+    	break;
+    	
     case 'h': // help
-	toLint.shift();
-	displayHelp();
-	process.exit();
-	break;
-	
+    	toLint.shift();
+    	displayHelp();
+    	process.exit();
+    	break;
+    	
     case 'm': // display default options
-	toLint.shift();
-	displayDefaultOption();
-	process.exit();
-	break;
-	
+    	toLint.shift();
+    	displayDefaultOption();
+    	process.exit();
+    	break;
+    	
     case 'q': // quiet
-	toLint.shift();
-	quiet = true;
-	break;
-	
+    	toLint.shift();
+    	quiet = true;
+    	break;
+    	
     case 'R': // directory recursive parsing
-	toLint.shift();
-	recursive = true;
-	break;
-	
+    	toLint.shift();
+    	recursive = true;
+    	break;
+    	
     case 's': // stop on first error
-	toLint.shift();
-	_log('Stop on first file error enabled');
-	stopOnFirstError = true;
-	break;
-	
+    	toLint.shift();
+    	_log('Stop on first file error enabled');
+    	stopOnFirstError = true;
+    	break;
+    	
     default:
-	_error('Invalid or incomplete option');
-	displayHelp();
-	process.exit(1);	
+    	_error('Invalid or incomplete option');
+    	displayHelp();
+    	process.exit(1);	
     }
 }
 
@@ -171,10 +171,10 @@ if(verbose) {
 
 // Linter ctor
 linter = jsrevival.create({
-    recursive: recursive,
-    stopOnFirstError: stopOnFirstError,
-    JSLintFilename: jslint_file,
-    verbose: verbose
+		recursive: recursive,
+		stopOnFirstError: stopOnFirstError,
+		JSLintFilename: jslint_file,
+		verbose: verbose
 });
 
 if (jslint_options !== ''){
@@ -182,109 +182,109 @@ if (jslint_options !== ''){
     jslint_options = '{' + jslint_options + '}';
     var 
     sandbox = {
-	result: undefined
+    	result: undefined
     },
     prop;
     
     try {
-	vm.runInNewContext('result = '+ jslint_options , sandbox, 'tmp.txt');
-	
+    	vm.runInNewContext('result = '+ jslint_options , sandbox, 'tmp.txt');
+    	
     } catch(e) {
-	_log('jslint_options: %s', jslint_options);
-	_error('!Aborting: jslint option format is not valid.');
-	process.exit(1);
+    	_log('jslint_options: %s', jslint_options);
+    	_error('!Aborting: jslint option format is not valid.');
+    	process.exit(1);
     }
     _log('JSLint default options overload:');
     for(prop in sandbox.result){
-	if (sandbox.result.hasOwnProperty(prop)) {
-	    if (!linter.JSLintOption.hasOwnProperty(prop) && prop !== "predef") {
-		_error("  ! unknown property: %s", prop);
-		process.exit(1);
-	    } else if (linter.JSLintOption[prop] !== sandbox.result[prop]) {
-		_log("  %s: %s", prop, sandbox.result[prop]);
-		linter.JSLintOption[prop] = sandbox.result[prop];
-	    } else {
-		_log("  %s: %s is already default value", prop, 
-		     sandbox.result[prop]);
-	    }
-	}
+    	if (sandbox.result.hasOwnProperty(prop)) {
+    		if (!linter.JSLintOption.hasOwnProperty(prop) && prop !== "predef") {
+    			_error("  ! unknown property: %s", prop);
+    			process.exit(1);
+    		} else if (linter.JSLintOption[prop] !== sandbox.result[prop]) {
+    			_log("  %s: %s", prop, sandbox.result[prop]);
+    			linter.JSLintOption[prop] = sandbox.result[prop];
+    		} else {
+    			_log("  %s: %s is already default value", prop, 
+    				sandbox.result[prop]);
+    		}
+    	}
     }
 }
 
 
 linter.on('ready', function(edition) {
-    _log('JSLINT edition: %s', edition);
-    for (i = 0; i < toLint.length; i++) {
-	linter.lint(toLint[i]);
-    }
+		_log('JSLINT edition: %s', edition);
+		for (i = 0; i < toLint.length; i++) {
+			linter.lint(toLint[i]);
+		}
 });
 
 linter.on('lint', function onLint(errors, filename) {	
-    relativeFilename = path.relative(process.cwd(), filename);
-    _log('Running jslint on %s...', relativeFilename);
-    
-    var
-    msg = path.basename(filename) + '> ';
-    
-    if (errors.length > 0) {
-	//debugger;
-	for (i = 0; i < errors.length; i++) {
-	    error = errors[i];
-	    //  {
-	    //      line      : The line (relative to 0) at which the lint was found
-	    //      character : The character (relative to 0) at which the lint was found
-	    //      reason    : The problem
-	    //      evidence  : The text line in which the problem occurred
-	    //      raw       : The raw message before the details were inserted
-	    //      a         : The first detail
-	    //      b         : The second detail
-	    //      c         : The third detail
-	    //      d         : The fourth detail
-	    //  }
-	    if (error !== null) {
-		errorCount++;
-		if (error.id === undefined) {
-		    _log(util.format('%s%s', 
-				     msg, 
-				     error.reason));
+		relativeFilename = path.relative(process.cwd(), filename);
+		_log('Running jslint on %s...', relativeFilename);
+		
+		var
+		msg = path.basename(filename) + '> ';
+		
+		if (errors.length > 0) {
+			//debugger;
+			for (i = 0; i < errors.length; i++) {
+				error = errors[i];
+				//  {
+				//      line      : The line (relative to 0) at which the lint was found
+				//      character : The character (relative to 0) at which the lint was found
+				//      reason    : The problem
+				//      evidence  : The text line in which the problem occurred
+				//      raw       : The raw message before the details were inserted
+				//      a         : The first detail
+				//      b         : The second detail
+				//      c         : The third detail
+				//      d         : The fourth detail
+				//  }
+				if (error !== null) {
+					errorCount++;
+					if (error.id === undefined) {
+						_log(util.format('%s%s', 
+							msg, 
+							error.reason));
+					} else {
+						evidence = error.evidence;
+						_log(util.format('%s%s line %d(%d): %s "%s"', 
+							msg,
+							error.id, 
+							error.line, 
+							error.character, 
+							error.reason, 
+							error.evidence));
+					}
+				}
+			}
+			errorFileCount++;
+			_log("%s KO", relativeFilename);
+			
 		} else {
-		    evidence = error.evidence;
-		    _log(util.format('%s%s line %d(%d): %s "%s"', 
-				     msg,
-				     error.id, 
-				     error.line, 
-				     error.character, 
-				     error.reason, 
-				     error.evidence));
+			// No error
+			_log("%s OK", relativeFilename);
 		}
-	    }
-	}
-	errorFileCount++;
-	_log("%s KO", relativeFilename);
-	
-    } else {
-	// No error
-	_log("%s OK", relativeFilename);
-    }
-    fileCount++;
+		fileCount++;
 });
 
 linter.on('end', function() {
-    if (errorCount > 0) {
-	_log('%d error%s on %d/%d file%s', errorCount, errorCount > 1 ? 's' : '', errorFileCount, fileCount, fileCount > 1 ? 's' : '');
-	process.exit(1);
-    } else {
-	if (fileCount > 1) {
-	    _log('All file%s(%s) OK', fileCount > 1 ? 's' : '', fileCount);
-	}
-    }
-    
+		if (errorCount > 0) {
+			_log('%d error%s on %d/%d file%s', errorCount, errorCount > 1 ? 's' : '', errorFileCount, fileCount, fileCount > 1 ? 's' : '');
+			process.exit(1);
+		} else {
+			if (fileCount > 1) {
+				_log('All file%s(%s) OK', fileCount > 1 ? 's' : '', fileCount);
+			}
+		}
+		
 });
 
 linter.on('error', function(err) {
-    if (err) {
-	_error("%s (%s)", err.message, err.code);
-	process.exit(1);
-    }
-    
+		if (err) {
+			_error("%s (%s)", err.message, err.code);
+			process.exit(1);
+		}
+		
 });
