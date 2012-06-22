@@ -25,11 +25,10 @@ jslintDefaultOption = [
     '  bitwise: true # if bitwise operators should be allowed',
     '  browser: true # if the standard browser globals should be predefined',
     '  cap: true # if upper case HTML should be allowed',
-    '  confusion: true # if types can be used inconsistently',
     '  continue: true # if the continuation statement should be tolerated',
     '  css: true # if CSS workarounds should be tolerated',
     '  debug: true # if debugger statements should be allowed',
-    '  devel: true # if logging should be allowed (console, alert, etc.)',
+    '  devel: true # if logging should be allowed (console, //alert, //etc.)',
     '  eqeq: true # if == should be allowed',
     '  es5: true # if ES5 syntax should be allowed',
     '  evil: true # if eval should be allowed',
@@ -49,11 +48,11 @@ jslintDefaultOption = [
     '  rhino: true # if the Rhino environment globals should be predefined',
     '  undef: true # if variables can be declared out of order',
     '  unparam: true # if unused parameters should be tolerated',
-    '  sloppy: true # if the "use strict"; pragma is optional',
+    '  sloppy: true # if the use strict; pragma is optional',
+    '  stupid: true # if really stupid practices are tolerated',
     '  sub: true # if all forms of subscript notation are tolerated',
     '  vars: true # if multiple var statements per function should be allowed',
     '  white: true # if sloppy whitespace is tolerated',
-    '  widget: true # if the Yahoo Widgets globals should be predefined',
     '  windows: true # if MS Windows-specific globals should be predefined',
     '' // This last line is required
 ].join('\n'),
@@ -89,7 +88,7 @@ jslintDirectory = [
 jslintOptionOverloadWarnings = [
     'JSLint default options overload:',
     '  properties: false',
-    '  confusion: true is already default value',
+    '  stupid: true is already default value',
     'JSLINT edition: 2012-01-25',
     'Running jslint on test/vows_jsrevival_bin.js...',
     'test/vows_jsrevival_bin.js OK',
@@ -124,113 +123,105 @@ function run_jsrevival(option, callback) {
 
 
 exports.suite1 = vows.describe('jsrevival option').addBatch({
-    'When passing no option': {
-	topic: function () {
-	    run_jsrevival('', this.callback);
-	},
-	'help is displayed to stdout and exit code equal 1': function (error, stdout, stderr) {
-	    assert.strictEqual(error.code, 1);
-	    assert.strictEqual(stdout, help);
-	    assert.strictEqual(stderr, '');
-	}
-    },'When passing -h option': {
-	topic: function () {
-	    run_jsrevival('-h', this.callback);
-	},
-	'help is displayed to stdout': function (error, stdout, stderr) {
-	    assert.isNull(error);
-	    assert.strictEqual(stdout, help);
-	    assert.strictEqual(stderr, '');
-	}
-    },
-    'When passing -m option': {
-	topic: function () {
-	    run_jsrevival('-m', this.callback);
-	},
-	'jslint default option is displayed to stdout': function (error, stdout, stderr) {
-	    assert.isNull(error);
-	    assert.strictEqual(stdout, jslintDefaultOption);
-	    assert.strictEqual(stderr, '');
-	}
-    },
-    'When passing -j option': {
-	topic: function () {
-	    run_jsrevival('-j ' + __dirname + '/jslint.js -o "properties: false" '+ __filename, this.callback);
-	},
-	'jsrevival use -j param jslint.js file': function (error, stdout, stderr) {
-	    assert.isNull(error);
-	    assert.strictEqual(stdout, jslintJOption);
-	    assert.strictEqual(stderr, '');
-	}
-    },
-    'When passing a directory with -R option on erroneous files': {
-	topic: function () {
-	    run_jsrevival('-j ' + __dirname + '/jslint.js -R '+ __dirname +'/Rtest', this.callback);
-	},
-	'jsrevival read directories recursively': function (error, stdout, stderr) {
-	    assert.strictEqual(error.code, 1);
-	    assert.strictEqual(stdout, jslintDirectoryR);
-	    assert.strictEqual(stderr, '');
-	}
-    },
-    'When passing a directory without -R option': {
-	topic: function () {
-	    run_jsrevival('-j ' + __dirname + '/jslint.js ' + __dirname +'/Rtest', this.callback);
-	},
-	'jsrevival doesn`t read directories recursively': function (error, stdout, stderr) {
-	    assert.isNull(error);
-	    assert.strictEqual(stdout, jslintDirectory);
-	    assert.strictEqual(stderr, '');
-	}
-    },
-    'When running jsrevival with -q option ': {
-	topic: function () {
-	    run_jsrevival('-q -o "properties: false" '+ __filename, this.callback);
-	},
-	'nothing is written on stdout or stderr': function (error, stdout, stderr) {
-	    assert.isNull(error);
-	    assert.strictEqual(stdout, '');
-	    assert.strictEqual(stderr, '');
-	}
-    },
-    'When running jsrevival with -o option and overloading a param with it`s default value': {
-	topic: function () {
-	    run_jsrevival('-j ' + __dirname + '/jslint.js -o "properties: false, confusion: true" '+ __filename, this.callback);
-	},
-	'It warns': function (error, stdout, stderr) {
-	    assert.isNull(error);
-	    assert.strictEqual(stdout, jslintOptionOverloadWarnings);
-	    assert.strictEqual(stderr, '');
-	}
-    }/*,
-       'When running jsrevival with -u option': {
-       topic: function () {
-       return "todo";
-       },
-       'TODO: it`s dl last jslint from github': function (topic) {
-       
-       }
-       }*/,
-    'When running jsrevival with -p option': {
-	topic: function () {
-	    run_jsrevival('-j ' + __dirname + '/jslint.js -o "undef: false" -p "b,c" '+ __dirname + '/Rtest', this.callback);
-	},
-	'predefined names, which will be used to declare global variables':function (error, stdout, stderr) {
-	    assert.isNull(error);
-	    assert.strictEqual(stdout, jslintPOption);
-	    assert.strictEqual(stderr, '');
-	}
-    },
-    'When running jsrevival with -s option': {
-	topic: function () {
-	    run_jsrevival('-j ' + __dirname + '/jslint.js -R -s '+ __dirname + '/Rtest', this.callback);
-	    
-	},
-	'it stop on first file error': function (error, stdout, stderr) {
-	    assert.strictEqual(error.code, 1);
-	    assert.strictEqual(stdout, jslintSOption);
-	    assert.strictEqual(stderr, '');
-	}
-    }
-    
+		'When passing no option': {
+			topic: function () {
+				run_jsrevival('', this.callback);
+			},
+			'help is displayed to stdout and exit code equal 1': function (error, stdout, stderr) {
+				assert.strictEqual(error.code, 1);
+				assert.strictEqual(stdout, help);
+				assert.strictEqual(stderr, '');
+			}
+		},'When passing -h option': {
+			topic: function () {
+				run_jsrevival('-h', this.callback);
+			},
+			'help is displayed to stdout': function (error, stdout, stderr) {
+				assert.isNull(error);
+				assert.strictEqual(stdout, help);
+				assert.strictEqual(stderr, '');
+			}
+		},
+		'When passing -m option': {
+			topic: function () {
+				run_jsrevival('-m', this.callback);
+			},
+			'jslint default option is displayed to stdout': function (error, stdout, stderr) {
+				assert.isNull(error);
+				assert.strictEqual(stdout, jslintDefaultOption);
+				assert.strictEqual(stderr, '');
+			}
+		},
+		'When passing -j option': {
+			topic: function () {
+				run_jsrevival('-j ' + __dirname + '/jslint.js -o "properties: false" '+ __filename, this.callback);
+			},
+			'jsrevival use -j param jslint.js file': function (error, stdout, stderr) {
+				assert.isNull(error);
+				assert.strictEqual(stdout, jslintJOption);
+				assert.strictEqual(stderr, '');
+			}
+		},
+		'When passing a directory with -R option on erroneous files': {
+			topic: function () {
+				run_jsrevival('-j ' + __dirname + '/jslint.js -R '+ __dirname +'/Rtest', this.callback);
+			},
+			'jsrevival read directories recursively': function (error, stdout, stderr) {
+				assert.strictEqual(error.code, 1);
+				assert.strictEqual(stdout, jslintDirectoryR);
+				assert.strictEqual(stderr, '');
+			}
+		},
+		'When passing a directory without -R option': {
+			topic: function () {
+				run_jsrevival('-j ' + __dirname + '/jslint.js ' + __dirname +'/Rtest', this.callback);
+			},
+			'jsrevival doesn`t read directories recursively': function (error, stdout, stderr) {
+				assert.isNull(error);
+				assert.strictEqual(stdout, jslintDirectory);
+				assert.strictEqual(stderr, '');
+			}
+		},
+		'When running jsrevival with -q option ': {
+			topic: function () {
+				run_jsrevival('-q -o "properties: false" '+ __filename, this.callback);
+			},
+			'nothing is written on stdout or stderr': function (error, stdout, stderr) {
+				assert.isNull(error);
+				assert.strictEqual(stdout, '');
+				assert.strictEqual(stderr, '');
+			}
+		},
+		'When running jsrevival with -o option and overloading a param with it`s default value': {
+			topic: function () {
+				run_jsrevival('-j ' + __dirname + '/jslint.js -o "properties: false, stupid: true" '+ __filename, this.callback);
+			},
+			'It warns': function (error, stdout, stderr) {
+				assert.isNull(error);
+				assert.strictEqual(stdout, jslintOptionOverloadWarnings);
+				assert.strictEqual(stderr, '');
+			}
+		},
+		'When running jsrevival with -p option': {
+			topic: function () {
+				run_jsrevival('-j ' + __dirname + '/jslint.js -o "undef: false" -p "b,c" '+ __dirname + '/Rtest', this.callback);
+			},
+			'predefined names, which will be used to declare global variables':function (error, stdout, stderr) {
+				assert.isNull(error);
+				assert.strictEqual(stdout, jslintPOption);
+				assert.strictEqual(stderr, '');
+			}
+		},
+		'When running jsrevival with -s option': {
+			topic: function () {
+				run_jsrevival('-j ' + __dirname + '/jslint.js -R -s '+ __dirname + '/Rtest', this.callback);
+				
+			},
+			'it stop on first file error': function (error, stdout, stderr) {
+				assert.strictEqual(error.code, 1);
+				assert.strictEqual(stdout, jslintSOption);
+				assert.strictEqual(stderr, '');
+			}
+		}
+		
 });

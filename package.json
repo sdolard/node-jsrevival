@@ -14,10 +14,11 @@
     "url": "git://github.com/sdolard/node-jsrevival.git"
   },
   "scripts": {
-    "test": "vows test/vows* --spec"
+  	  "test": "vows test/vows* --spec",
+  	  "posttest": "node bin/jsrevival -o \"properties: false, maxlen: 0\" -R lib/jsrevival.js test/vows_jsrevival_bin.js test/vows_jsrevival_lib.js"
   },
   "bin": {
-    "jsrevival": "./bin/jsrevival.js"
+  	  "jsrevival": "./bin/jsrevival.js"
   },
   "engines": {
     "node": ">= 0.6.0"
