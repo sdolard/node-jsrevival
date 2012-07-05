@@ -21,7 +21,7 @@ curl http://npmjs.org/install.sh || sh
 ## Usage
 ### CLI
 ```
-jsrevival [-j jslint_file] [-o jslint_options_file] [-s] [–m] [–v] [-R] [–q] [-p prefef] [–h] files directories ... 
+jsrevival [-j jslint_file] [-o jslint_options_file] [-s] [–m] [–v] [-R] [–q] [-p prefef] [-c] [–h] files directories ... 
 jsrevival: a JSLint cli.
 Options:
   j: jslint file (overload default)
@@ -33,6 +33,7 @@ Options:
   q: quiet. Ex: to use jsrevival in shell script
   p: predefined names, which will be used to declare global variables. Ex: -p "foo, bar"
   h: display this help
+  c: no color
 
 ```
 
