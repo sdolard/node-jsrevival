@@ -1,4 +1,4 @@
 #!/bin/sh
-vows test/vows*
+npm test
 exit $? 
 
