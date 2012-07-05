@@ -15,7 +15,7 @@
   },
   "scripts": {
   	  "test": "vows test/vows* --spec",
-  	  "posttest": "node bin/jsrevival -o \"properties: false, maxlen: 0\" -R lib/jsrevival.js test/vows_jsrevival_bin.js test/vows_jsrevival_lib.js"
+  	  "posttest": "node bin/jsrevival -o \"properties: false, maxlen: 0, debug: false, vars: false\" -R lib/jsrevival-app.js lib/jsrevival.js test/vows_jsrevival_bin.js test/vows_jsrevival_lib.js"
   },
   "bin": {
   	  "jsrevival": "./bin/jsrevival.js"
@@ -25,7 +25,8 @@
   },
   "dependencies": {
     "posix-getopt": "0.0.x",
-    "vows": "0.6.x"
+    "vows": "0.6.x",
+    "colors": "0.6.x"
   },
   "devDependencies": {},
   "optionalDependencies": {}
