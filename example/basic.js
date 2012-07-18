@@ -6,6 +6,6 @@ linter.on('ready', function() {
 		linter.lint(__dirname + '/../test/Rtest/test.js');
 });
 
-linter.on('lint', function onLint(errors, filename) {
+linter.on('lint', function (errors, filename) {
 		console.log("filename: %s, error count: %d", filename, errors.length);
 });

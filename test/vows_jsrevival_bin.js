@@ -4,7 +4,7 @@ assert = require('assert'),
 util = require('util'),
 exec = require('child_process').exec,
 help = [
-    'jsrevival [-j jslint_file] [-o jslint_options_file] [-s] [–m] [–v] [-R] [–q] [-p prefef] [-c] [–h] files directories ... ',
+    'jsrevival [-j jslint_file] [-o jslint_options_file] [-s] [–m] [–v] [-R] [–q] [-p prefef] [-r reporterName] [–h] files directories ... ',
     'jsrevival: a JSLint cli.',
     'Options:',
     '  j: jslint file (overload default)',
@@ -16,7 +16,11 @@ help = [
     '  q: quiet. Ex: to use jsrevival in shell script',
     '  p: predefined names, which will be used to declare global variables. Ex: -p "foo, bar"',
     '  h: display this help',
-    '  c: no color',
+    '  r: reporter (default: cli-colored)',
+    '     reporter list:',
+    '      - cli-colored',
+    '      - cli',
+    
     '' // This last line is required
 ].join('\n'),
 jslintDefaultOption = [
@@ -57,7 +61,6 @@ jslintDefaultOption = [
     '' // This last line is required
 ].join('\n'),
 jslintJOption = [
-    'Colors disabled',
     'JSLint default options overload:',
     '  properties: false',
     'JSLINT edition: 2012-01-25',
@@ -65,7 +68,6 @@ jslintJOption = [
     '' // This last line is required
 ].join('\n'),
 jslintDirectoryR = [
-    'Colors disabled',
     'JSLINT edition: 2012-01-25',
     'test/Rtest/test.js... OK',
     'test/Rtest/A/testA.js...',
@@ -78,13 +80,11 @@ jslintDirectoryR = [
     '' // This last line is required
 ].join('\n'),
 jslintDirectory = [
-    'Colors disabled',
     'JSLINT edition: 2012-01-25',
     'test/Rtest/test.js... OK',
     '' // This last line is required
 ].join('\n'),
 jslintOptionOverloadWarnings = [
-    'Colors disabled',
     'JSLint default options overload:',
     '  properties: false',
     '  stupid: true is already default value',
@@ -93,7 +93,6 @@ jslintOptionOverloadWarnings = [
     '' // This last line is required
 ].join('\n'),
 jslintSOption = [
-    'Colors disabled',
     'Stop on first file error enabled',
     'JSLINT edition: 2012-01-25',
     'test/Rtest/test.js... OK',
@@ -104,7 +103,6 @@ jslintSOption = [
     '' // This last line is required
 ].join('\n'),
 jslintPOption = [
-    'Colors disabled',
     'JSLint default options overload:',
     '  undef: false',
     '  predef: b,c',
@@ -115,16 +113,15 @@ jslintPOption = [
 
 function run_jsrevival(option, callback) {
     //console.log('option: %s', option);
-
+    
     var cmdLine= util.format('node %s/../bin/jsrevival.js %s',
         __dirname,
         option);
-    //console.log(cmdLine);
+    //console.error(cmdLine);
     exec(cmdLine, callback);
 }
 
-// -c nocolor for all test
-exports.suite1 = vows.describe('jsrevival option').addBatch({
+exports.suite1 = vows.describe('jsrevival bin').addBatch({
         'When passing no option': {
             topic: function () {
                 run_jsrevival('', this.callback);
@@ -136,7 +133,7 @@ exports.suite1 = vows.describe('jsrevival option').addBatch({
             }
         },'When passing -h option': {
             topic: function () {
-                run_jsrevival('-c -h ', this.callback);
+                run_jsrevival('-h ', this.callback);
             },
             'help is displayed to stdout': function (error, stdout, stderr) {
                 assert.isNull(error);
@@ -147,7 +144,7 @@ exports.suite1 = vows.describe('jsrevival option').addBatch({
         'When passing -m option': {
             topic: function () {
                 // We disable color for test
-                run_jsrevival('-c -m ', this.callback);
+                run_jsrevival('-m ', this.callback);
             },
             'jslint default option is displayed to stdout': function (error, stdout, stderr) {
                 assert.isNull(error);
@@ -157,7 +154,7 @@ exports.suite1 = vows.describe('jsrevival option').addBatch({
         },
         'When passing -j option': {
             topic: function () {
-                run_jsrevival('-c -j ' + __dirname + '/jslint.js -o "properties: false" '+ __filename, this.callback);
+                run_jsrevival('-r cli -j ' + __dirname + '/jslint.js -o "properties: false" '+ __filename, this.callback);
             },
             'jsrevival use -j param jslint.js file': function (error, stdout, stderr) {
                 assert.isNull(error);
@@ -167,7 +164,7 @@ exports.suite1 = vows.describe('jsrevival option').addBatch({
         },
         'When passing a directory with -R option on erroneous files': {
             topic: function () {
-                run_jsrevival('-c -j ' + __dirname + '/jslint.js -R '+ __dirname +'/Rtest', this.callback);
+                run_jsrevival('-r cli -j ' + __dirname + '/jslint.js -R '+ __dirname +'/Rtest', this.callback);
             },
             'jsrevival read directories recursively': function (error, stdout, stderr) {
                 assert.strictEqual(error.code, 1);
@@ -177,7 +174,7 @@ exports.suite1 = vows.describe('jsrevival option').addBatch({
         },
         'When passing a directory without -R option': {
             topic: function () {
-                run_jsrevival('-c -j ' + __dirname + '/jslint.js ' + __dirname +'/Rtest', this.callback);
+                run_jsrevival('-r cli -j ' + __dirname + '/jslint.js ' + __dirname +'/Rtest', this.callback);
             },
             'jsrevival doesn`t read directories recursively': function (error, stdout, stderr) {
                 assert.isNull(error);
@@ -187,7 +184,7 @@ exports.suite1 = vows.describe('jsrevival option').addBatch({
         },
         'When running jsrevival with -q option ': {
             topic: function () {
-                run_jsrevival('-c -q -o "properties: false" '+ __filename, this.callback);
+                run_jsrevival('-q -r cli -o "properties: false" '+ __filename, this.callback);
             },
             'nothing is written on stdout or stderr': function (error, stdout, stderr) {
                 assert.isNull(error);
@@ -197,7 +194,7 @@ exports.suite1 = vows.describe('jsrevival option').addBatch({
         },
         'When running jsrevival with -o option and overloading a param with it`s default value': {
             topic: function () {
-                run_jsrevival('-c -j ' + __dirname + '/jslint.js -o "properties: false, stupid: true" '+ __filename, this.callback);
+                run_jsrevival('-r cli -j ' + __dirname + '/jslint.js -o "properties: false, stupid: true" '+ __filename, this.callback);
             },
             'It warns': function (error, stdout, stderr) {
                 assert.isNull(error);
@@ -207,7 +204,7 @@ exports.suite1 = vows.describe('jsrevival option').addBatch({
         },
         'When running jsrevival with -p option': {
             topic: function () {
-                run_jsrevival('-c -j ' + __dirname + '/jslint.js -o "undef: false" -p "b,c" '+ __dirname + '/Rtest', this.callback);
+                run_jsrevival('-r cli -j ' + __dirname + '/jslint.js -o "undef: false" -p "b,c" '+ __dirname + '/Rtest', this.callback);
             },
             'predefined names, which will be used to declare global variables':function (error, stdout, stderr) {
                 assert.isNull(error);
@@ -217,14 +214,23 @@ exports.suite1 = vows.describe('jsrevival option').addBatch({
         },
         'When running jsrevival with -s option': {
             topic: function () {
-                run_jsrevival('-c -j ' + __dirname + '/jslint.js -R -s '+ __dirname + '/Rtest', this.callback);
+                run_jsrevival('-r cli -j ' + __dirname + '/jslint.js -R -s '+ __dirname + '/Rtest', this.callback);
                 
             },
-            'it stop on first file error': function (error, stdout, stderr) {
+            'it stops on first file error': function (error, stdout, stderr) {
                 assert.strictEqual(error.code, 1);
                 assert.strictEqual(stdout, jslintSOption);
                 assert.strictEqual(stderr, '');
             }
-        }
-        
+        },
+		'When running jsrevival with an invalid reporter name': {
+			topic: function () {
+				run_jsrevival('-r øÇ¡«¶{‘“ë', this.callback);
+            }, 
+            'it stops ': function (error, stdout, stderr) {
+                assert.strictEqual(error.code, 1);
+                assert.strictEqual(stdout, '');
+                assert.strictEqual(stderr, 'Reporter not found: øÇ¡«¶{‘“ë\n');
+            }
+		}	
 });

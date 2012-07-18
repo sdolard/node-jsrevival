@@ -21,7 +21,7 @@ curl http://npmjs.org/install.sh || sh
 ## Usage
 ### CLI
 ```
-jsrevival [-j jslint_file] [-o jslint_options_file] [-s] [–m] [–v] [-R] [–q] [-p prefef] [-c] [–h] files directories ... 
+jsrevival [-j jslint_file] [-o jslint_options_file] [-s] [–m] [–v] [-R] [–q] [-p prefef] [-r reporterName] [–h] files directories ... 
 jsrevival: a JSLint cli.
 Options:
   j: jslint file (overload default)
@@ -33,7 +33,10 @@ Options:
   q: quiet. Ex: to use jsrevival in shell script
   p: predefined names, which will be used to declare global variables. Ex: -p "foo, bar"
   h: display this help
-  c: no color
+  r: reporter (default: cli-colored)
+     reporter list:
+      - cli-colored
+      - cli
 
 ```
 
@@ -47,7 +50,7 @@ linter.on('ready', function() {
 		linter.lint(__dirname + '/../test/Rtest/test.js');
 });
 
-linter.on('lint', function onLint(errors, filename) {
+linter.on('lint', function (errors, filename) {
 		console.log("filename: %s, error count: %d", filename, errors.length);
 });
 
@@ -56,6 +59,12 @@ linter.on('lint', function onLint(errors, filename) {
 ### Examples
 * examples/basic.js
 * bin/jsrevival.js
+
+
+### Reporters
+* cli-colored (default)
+* cli
+
 
 
 ## Exports 
@@ -71,7 +80,7 @@ linter.on('lint', function onLint(errors, filename) {
 * @params [{boolean}]config.recursive. Default to false. Only valid for directories.
 * @params [{boolean}] config.stopOnFirstError. Default to false.
 * @event ready({string} JSLINT edition) // class has load jslint.js > lint method can be called there
-* @event lint({array} errors, {string} filepath) // lint what eve you whant
+* @event lint({array} errors, {string} filepath) // lint what ever you want
 * @event end // there is no more things to lint
 * @event error({Error} err) 
 */
