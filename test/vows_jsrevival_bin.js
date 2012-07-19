@@ -16,11 +16,12 @@ help = [
     '  q: quiet. Ex: to use jsrevival in shell script',
     '  p: predefined names, which will be used to declare global variables. Ex: -p "foo, bar"',
     '  h: display this help',
-    '  r: reporter (default: cli-colored)',
+    '  r: reporter (default: cli)',
     '     reporter list:',
-    '      - cli-colored',
     '      - cli',
-    
+    '      - cli-hide-valid',
+    '      - cli-no-color',
+    '      - cli-hide-valid-no-color',
     '' // This last line is required
 ].join('\n'),
 jslintDefaultOption = [
@@ -61,53 +62,69 @@ jslintDefaultOption = [
     '' // This last line is required
 ].join('\n'),
 jslintJOption = [
+	'Reporter:  cli-no-color',
     'JSLint default options overload:',
     '  properties: false',
     'JSLINT edition: 2012-01-25',
-    'test/vows_jsrevival_bin.js... OK',
+    'test/vows_jsrevival_bin.js OK',
     '' // This last line is required
 ].join('\n'),
 jslintDirectoryR = [
+	'Reporter:  cli-no-color',
     'JSLINT edition: 2012-01-25',
-    'test/Rtest/test.js... OK',
-    'test/Rtest/A/testA.js...',
+    'test/Rtest/test.js OK',
+    'test/Rtest/A/testA.js KO',
     'testA.js> (error) line 1(6): Expected \';\' and instead saw \'(end)\'. "a = 1"',
     'testA.js> Stopping.  (100% scanned).',
-    'test/Rtest/B/testB.js...',
+    'test/Rtest/B/testB.js KO',
     'testB.js> (error) line 1(6): Expected \';\' and instead saw \'(end)\'. "b = 2"',
     'testB.js> Stopping.  (100% scanned).',
     '4 errors on 2/3 files',
     '' // This last line is required
 ].join('\n'),
 jslintDirectory = [
+	'Reporter:  cli-no-color',
     'JSLINT edition: 2012-01-25',
-    'test/Rtest/test.js... OK',
+    'test/Rtest/test.js OK',
     '' // This last line is required
 ].join('\n'),
 jslintOptionOverloadWarnings = [
+	'Reporter:  cli-no-color',
     'JSLint default options overload:',
     '  properties: false',
     '  stupid: true is already default value',
     'JSLINT edition: 2012-01-25',
-    'test/vows_jsrevival_bin.js... OK',
+    'test/vows_jsrevival_bin.js OK',
     '' // This last line is required
 ].join('\n'),
 jslintSOption = [
+	'Reporter:  cli-no-color',
     'Stop on first file error enabled',
     'JSLINT edition: 2012-01-25',
-    'test/Rtest/test.js... OK',
-    'test/Rtest/A/testA.js...',
+    'test/Rtest/test.js OK',
+    'test/Rtest/A/testA.js KO',
     'testA.js> (error) line 1(6): Expected \';\' and instead saw \'(end)\'. "a = 1"',
     'testA.js> Stopping.  (100% scanned).',
     '2 errors on 1/2 files',
     '' // This last line is required
 ].join('\n'),
 jslintPOption = [
+	'Reporter:  cli-no-color',
     'JSLint default options overload:',
     '  undef: false',
     '  predef: b,c',
     'JSLINT edition: 2012-01-25',
-    'test/Rtest/test.js... OK',
+    'test/Rtest/test.js OK',
+    '' // This last line is required
+].join('\n'),
+jslintHideValid = [
+	'Reporter:  cli-hide-valid-no-color',
+    'Stop on first file error enabled',
+    'JSLINT edition: 2012-01-25',
+    'test/Rtest/A/testA.js KO',
+    'testA.js> (error) line 1(6): Expected \';\' and instead saw \'(end)\'. "a = 1"',
+    'testA.js> Stopping.  (100% scanned).',
+    '2 errors on 1/2 files',
     '' // This last line is required
 ].join('\n');
 
@@ -154,7 +171,7 @@ exports.suite1 = vows.describe('jsrevival bin').addBatch({
         },
         'When passing -j option': {
             topic: function () {
-                run_jsrevival('-r cli -j ' + __dirname + '/jslint.js -o "properties: false" '+ __filename, this.callback);
+                run_jsrevival('-r cli-no-color -j ' + __dirname + '/jslint.js -o "properties: false" '+ __filename, this.callback);
             },
             'jsrevival use -j param jslint.js file': function (error, stdout, stderr) {
                 assert.isNull(error);
@@ -164,7 +181,7 @@ exports.suite1 = vows.describe('jsrevival bin').addBatch({
         },
         'When passing a directory with -R option on erroneous files': {
             topic: function () {
-                run_jsrevival('-r cli -j ' + __dirname + '/jslint.js -R '+ __dirname +'/Rtest', this.callback);
+                run_jsrevival('-r cli-no-color -j ' + __dirname + '/jslint.js -R '+ __dirname +'/Rtest', this.callback);
             },
             'jsrevival read directories recursively': function (error, stdout, stderr) {
                 assert.strictEqual(error.code, 1);
@@ -174,7 +191,7 @@ exports.suite1 = vows.describe('jsrevival bin').addBatch({
         },
         'When passing a directory without -R option': {
             topic: function () {
-                run_jsrevival('-r cli -j ' + __dirname + '/jslint.js ' + __dirname +'/Rtest', this.callback);
+                run_jsrevival('-r cli-no-color -j ' + __dirname + '/jslint.js ' + __dirname +'/Rtest', this.callback);
             },
             'jsrevival doesn`t read directories recursively': function (error, stdout, stderr) {
                 assert.isNull(error);
@@ -184,7 +201,7 @@ exports.suite1 = vows.describe('jsrevival bin').addBatch({
         },
         'When running jsrevival with -q option ': {
             topic: function () {
-                run_jsrevival('-q -r cli -o "properties: false" '+ __filename, this.callback);
+                run_jsrevival('-q -r cli-no-color -o "properties: false" '+ __filename, this.callback);
             },
             'nothing is written on stdout or stderr': function (error, stdout, stderr) {
                 assert.isNull(error);
@@ -194,7 +211,7 @@ exports.suite1 = vows.describe('jsrevival bin').addBatch({
         },
         'When running jsrevival with -o option and overloading a param with it`s default value': {
             topic: function () {
-                run_jsrevival('-r cli -j ' + __dirname + '/jslint.js -o "properties: false, stupid: true" '+ __filename, this.callback);
+                run_jsrevival('-r cli-no-color -j ' + __dirname + '/jslint.js -o "properties: false, stupid: true" '+ __filename, this.callback);
             },
             'It warns': function (error, stdout, stderr) {
                 assert.isNull(error);
@@ -204,7 +221,7 @@ exports.suite1 = vows.describe('jsrevival bin').addBatch({
         },
         'When running jsrevival with -p option': {
             topic: function () {
-                run_jsrevival('-r cli -j ' + __dirname + '/jslint.js -o "undef: false" -p "b,c" '+ __dirname + '/Rtest', this.callback);
+                run_jsrevival('-r cli-no-color -j ' + __dirname + '/jslint.js -o "undef: false" -p "b,c" '+ __dirname + '/Rtest', this.callback);
             },
             'predefined names, which will be used to declare global variables':function (error, stdout, stderr) {
                 assert.isNull(error);
@@ -214,7 +231,7 @@ exports.suite1 = vows.describe('jsrevival bin').addBatch({
         },
         'When running jsrevival with -s option': {
             topic: function () {
-                run_jsrevival('-r cli -j ' + __dirname + '/jslint.js -R -s '+ __dirname + '/Rtest', this.callback);
+                run_jsrevival('-r cli-no-color -j ' + __dirname + '/jslint.js -R -s '+ __dirname + '/Rtest', this.callback);
                 
             },
             'it stops on first file error': function (error, stdout, stderr) {
@@ -232,5 +249,16 @@ exports.suite1 = vows.describe('jsrevival bin').addBatch({
                 assert.strictEqual(stdout, '');
                 assert.strictEqual(stderr, 'Reporter not found: øÇ¡«¶{‘“ë\n');
             }
-		}	
+		},
+        'When running jsrevival with cli-hide-valid reporter': {
+            topic: function () {
+                run_jsrevival('-r cli-hide-valid-no-color -j ' + __dirname + '/jslint.js -R -s '+ __dirname + '/Rtest', this.callback);
+                
+            },
+            'it stops on first file error': function (error, stdout, stderr) {
+                assert.strictEqual(error.code, 1);
+                assert.strictEqual(stdout, jslintHideValid);
+                assert.strictEqual(stderr, '');
+            }
+        }
 });

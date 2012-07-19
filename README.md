@@ -33,10 +33,12 @@ Options:
   q: quiet. Ex: to use jsrevival in shell script
   p: predefined names, which will be used to declare global variables. Ex: -p "foo, bar"
   h: display this help
-  r: reporter (default: cli-colored)
+  r: reporter (default: cli)
      reporter list:
-      - cli-colored
       - cli
+      - cli-hide-valid
+      - cli-no-color
+      - cli-hide-valid-no-color
 
 ```
 
