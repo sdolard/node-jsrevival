@@ -64,8 +64,10 @@ linter.on('lint', function (errors, filename) {
 
 
 ### Reporters
-* cli-colored (default)
-* cli
+* cli (default)
+* cli-hide-valid
+* cli-no-color
+* cli-hide-valid-no-color
 
 
 
