@@ -255,7 +255,7 @@ exports.suite1 = vows.describe('jsrevival bin').addBatch({
                 run_jsrevival('-r cli-hide-valid-no-color -j ' + __dirname + '/jslint.js -R -s '+ __dirname + '/Rtest', this.callback);
                 
             },
-            'it stops on first file error': function (error, stdout, stderr) {
+            'Output is valid': function (error, stdout, stderr) {
                 assert.strictEqual(error.code, 1);
                 assert.strictEqual(stdout, jslintHideValid);
                 assert.strictEqual(stderr, '');
