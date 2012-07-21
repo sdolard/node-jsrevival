@@ -4,7 +4,7 @@ assert = require('assert'),
 util = require('util'),
 exec = require('child_process').exec,
 help = [
-    'jsrevival [-j jslint_file] [-o jslint_options_file] [-s] [–m] [–v] [-R] [–q] [-p prefef] [-r reporterName] [–h] files directories ... ',
+    'jsrevival [-j jslint_file] [-o jslint_options_file] [-s] [–m] [–v] [-R] [–q] [-p prefef] [-r reporterName] [-e] [–h] files directories ... ',
     'jsrevival: a JSLint cli.',
     'Options:',
     '  j: jslint file (overload default)',
@@ -15,6 +15,7 @@ help = [
     '  s: stop on first file error',
     '  q: quiet. Ex: to use jsrevival in shell script',
     '  p: predefined names, which will be used to declare global variables. Ex: -p "foo, bar"',
+    '  e: read reporter config from JSREVIVAL_REPORTER user environment',
     '  h: display this help',
     '  r: reporter (default: cli)',
     '     reporter list:',
@@ -242,7 +243,7 @@ exports.suite1 = vows.describe('jsrevival bin').addBatch({
         },
 		'When running jsrevival with an invalid reporter name': {
 			topic: function () {
-				run_jsrevival('-r øÇ¡«¶{‘“ë', this.callback);
+				run_jsrevival('-r øÇ¡«¶{‘“ë '+ __dirname + '/Rtest', this.callback);
             }, 
             'it stops ': function (error, stdout, stderr) {
                 assert.strictEqual(error.code, 1);
@@ -258,6 +259,17 @@ exports.suite1 = vows.describe('jsrevival bin').addBatch({
             'Output is valid': function (error, stdout, stderr) {
                 assert.strictEqual(error.code, 1);
                 assert.strictEqual(stdout, jslintHideValid);
+                assert.strictEqual(stderr, '');
+            }
+        },
+        'When running jsrevival -e option': {
+            topic: function () {
+                process.env.JSREVIVAL_REPORTER = 'cli-no-color';
+                run_jsrevival('-e '+ __dirname + '/Rtest', this.callback);
+                
+            },
+            'Output is valid': function (error, stdout, stderr) {
+                assert.strictEqual(stdout, 'Reading reporter from user environment:  cli-no-color\nReporter:  cli-no-color\nJSLINT edition: 2012-05-09\ntest/Rtest/test.js OK\n');
                 assert.strictEqual(stderr, '');
             }
         }
