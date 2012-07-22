@@ -4,25 +4,26 @@ assert = require('assert'),
 util = require('util'),
 exec = require('child_process').exec,
 help = [
-    'jsrevival [-j jslint_file] [-o jslint_options_file] [-s] [–m] [–v] [-R] [–q] [-p prefef] [-r reporterName] [-e] [–h] files directories ... ',
-    'jsrevival: a JSLint cli.',
-    'Options:',
-    '  j: jslint file (overload default)',
-    '  o: jslint option (overload default). Ex: -o "unparam: true, vars: false..."',
-    '  m: display jslint default option',
-    '  v: verbose mode',
-    '  R: run recursively on directories',
-    '  s: stop on first file error',
-    '  q: quiet. Ex: to use jsrevival in shell script',
-    '  p: predefined names, which will be used to declare global variables. Ex: -p "foo, bar"',
-    '  e: read reporter config from JSREVIVAL_REPORTER user environment',
-    '  h: display this help',
-    '  r: reporter (default: cli)',
-    '     reporter list:',
-    '      - cli',
-    '      - cli-hide-valid',
-    '      - cli-no-color',
-    '      - cli-hide-valid-no-color',
+'jsrevival [-j jslint_file] [ [ [-o jslint_options] [-p prefef] ] || [–c jslint_config_file] ] [-s] [–m] [–v] [-R] [–q]  [ [-r reporterName] || [-e] ] [–h] files directories ... ',
+'jsrevival: a JSLint cli.',
+'Options:',
+'  j: jslint file (overload default)',
+'  o: jslint option (overload default). Ex: -o "unparam: true, vars: false..."',
+'  p: predefined names, which will be used to declare global variables. Ex: -p "foo, bar"',
+'  c: jslint config file (JSON expected)',
+'  m: display jslint default option',
+'  v: verbose mode',
+'  R: run recursively on directories',
+'  s: stop on first file error',
+'  q: quiet. Ex: to use jsrevival in shell script',
+'  e: read reporter config from JSREVIVAL_REPORTER user variable environment',
+'  h: display this help',
+'  r: reporter (default: cli)',
+'     reporter list:',
+'      - cli',
+'      - cli-hide-valid',
+'      - cli-no-color',
+'      - cli-hide-valid-no-color',
     '' // This last line is required
 ].join('\n'),
 jslintDefaultOption = [
@@ -64,6 +65,7 @@ jslintDefaultOption = [
 ].join('\n'),
 jslintJOption = [
 	'Reporter:  cli-no-color',
+	'Reading jslint config from command line',
     'JSLint default options overload:',
     '  properties: false',
     'JSLINT edition: 2012-01-25',
@@ -91,9 +93,9 @@ jslintDirectory = [
 ].join('\n'),
 jslintOptionOverloadWarnings = [
 	'Reporter:  cli-no-color',
+	'Reading jslint config from command line',
     'JSLint default options overload:',
     '  properties: false',
-    '  stupid: true is already default value',
     'JSLINT edition: 2012-01-25',
     'test/vows_jsrevival_bin.js OK',
     '' // This last line is required
@@ -111,6 +113,7 @@ jslintSOption = [
 ].join('\n'),
 jslintPOption = [
 	'Reporter:  cli-no-color',
+	'Reading jslint config from command line',
     'JSLint default options overload:',
     '  undef: false',
     '  predef: b,c',
@@ -127,7 +130,19 @@ jslintHideValid = [
     'testA.js> Stopping.  (100% scanned).',
     '2 errors on 1/2 files',
     '' // This last line is required
+].join('\n'),
+
+jslintCOption = [
+	'Reporter:  cli-hide-valid-no-color',
+	'Reading jslint config from:  /Users/sebastiend/dev/Perso/node/node-jsrevival/test/jslint_conf.json',
+	'JSLint default options overload:',
+	'  predef: foo,bar',
+	'  properties: false',
+	'  white: false',
+	'JSLINT edition: 2012-05-09',
+    '' // This last line is required
 ].join('\n');
+
 
 function run_jsrevival(option, callback) {
     //console.log('option: %s', option);
@@ -210,7 +225,7 @@ exports.suite1 = vows.describe('jsrevival bin').addBatch({
                 assert.strictEqual(stderr, '');
             }
         },
-        'When running jsrevival with -o option and overloading a param with it`s default value': {
+        'When running jsrevival with -o option and overloading a param with another value than original': {
             topic: function () {
                 run_jsrevival('-r cli-no-color -j ' + __dirname + '/jslint.js -o "properties: false, stupid: true" '+ __filename, this.callback);
             },
@@ -270,6 +285,16 @@ exports.suite1 = vows.describe('jsrevival bin').addBatch({
             },
             'Output is valid': function (error, stdout, stderr) {
                 assert.strictEqual(stdout, 'Reading reporter from user environment:  cli-no-color\nReporter:  cli-no-color\nJSLINT edition: 2012-05-09\ntest/Rtest/test.js OK\n');
+                assert.strictEqual(stderr, '');
+            }
+        },
+        'When running jsrevival -c option': {
+            topic: function () {
+                run_jsrevival('-r cli-hide-valid-no-color -c '+ __dirname + '/jslint_conf.json ' + __dirname + '/Rtest', this.callback);
+                
+            },
+            'Output is valid': function (error, stdout, stderr) {
+                assert.strictEqual(stdout, jslintCOption);
                 assert.strictEqual(stderr, '');
             }
         }

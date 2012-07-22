@@ -1,33 +1,34 @@
 {
-  "author": "Sébastien Dolard <sdolard@gmail.com>",
-  "name": "jsrevival",
-  "description": "A javascript lib and cli linter using JSLint",
-  "version": "0.0.6",
-  "homepage": "https://github.com/sdolard/node-jsrevival",
-  "keywords": [
-    "jslint",
-    "linter",
-    "cli"
-  ],
-  "repository": {
-    "type": "git",
-    "url": "git://github.com/sdolard/node-jsrevival.git"
-  },
-  "scripts": {
-  	  "test": "vows test/vows* --spec",
-  	  "posttest": "node bin/jsrevival -o \"properties: false, maxlen: 0, debug: false, vars: false\" -R lib/jsrevival-app.js lib/jsrevival.js test/vows_jsrevival_bin.js test/vows_jsrevival_lib.js"
-  },
-  "bin": {
-  	  "jsrevival": "./bin/jsrevival.js"
-  },
-  "engines": {
-    "node": ">= 0.6.0"
-  },
-  "dependencies": {
-    "posix-getopt": "0.0.x",
-    "vows": "0.6.x",
-    "colors": "0.6.x"
-  },
-  "devDependencies": {},
-  "optionalDependencies": {}
+	"author": "Sébastien Dolard <sdolard@gmail.com>",
+	"name": "jsrevival",
+	"description": "A javascript lib and cli linter using JSLint",
+	"version": "0.0.7",
+	"homepage": "https://github.com/sdolard/node-jsrevival",
+	"keywords": [
+		"jslint",
+		"linter",
+		"cli"
+	],
+	"repository": {
+		"type": "git",
+		"url": "git://github.com/sdolard/node-jsrevival.git"
+	},
+	"scripts": {
+		"test": "vows test/vows* --spec",
+		"posttest": "node bin/jsrevival -o \"properties: false, maxlen: 0, debug: false, vars: false\" -R lib/jsrevival-app.js lib/jsrevival.js test/vows_jsrevival_bin.js test/vows_jsrevival_lib.js"
+	},
+	"bin": {
+		"jsrevival": "./bin/jsrevival.js"
+	},
+	"engines": {
+		"node": ">= 0.6.0"
+	},
+	"dependencies": {
+		"posix-getopt": "0.0.x",
+		"vows": "0.6.x",
+		"colors": "0.6.x",
+		"jsonlint": "1.x.x"
+	},
+	"devDependencies": {},
+	"optionalDependencies": {}
 }
