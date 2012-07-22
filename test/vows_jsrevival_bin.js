@@ -16,7 +16,7 @@ help = [
 '  R: run recursively on directories',
 '  s: stop on first file error',
 '  q: quiet. Ex: to use jsrevival in shell script',
-'  e: read reporter config from JSREVIVAL_REPORTER user variable environment',
+'  e: read reporter config from JSREVIVAL_REPORTER user variable environment (stronger than -r option)',
 '  h: display this help',
 '  r: reporter (default: cli)',
 '     reporter list:',
@@ -134,7 +134,7 @@ jslintHideValid = [
 
 jslintCOption = [
 	'Reporter:  cli-hide-valid-no-color',
-	'Reading jslint config from:  /Users/sebastiend/dev/Perso/node/node-jsrevival/test/jslint_conf.json',
+	'Reading jslint config from:  test/jslint_conf.json',
 	'JSLint default options overload:',
 	'  predef: foo,bar',
 	'  properties: false',
@@ -290,7 +290,7 @@ exports.suite1 = vows.describe('jsrevival bin').addBatch({
         },
         'When running jsrevival -c option': {
             topic: function () {
-                run_jsrevival('-r cli-hide-valid-no-color -c '+ __dirname + '/jslint_conf.json ' + __dirname + '/Rtest', this.callback);
+                run_jsrevival('-r cli-hide-valid-no-color -c test/jslint_conf.json ' + __dirname + '/Rtest', this.callback);
                 
             },
             'Output is valid': function (error, stdout, stderr) {
