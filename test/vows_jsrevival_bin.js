@@ -141,6 +141,16 @@ jslintCOption = [
 	'  white: false',
 	'JSLINT edition: 2012-05-09',
     '' // This last line is required
+].join('\n'),
+jslintCOptionInvalid = [
+	'Reporter:  cli-hide-valid-no-color',
+	'Reading jslint config from:  test/jslint_conf.json',
+	'JSLint default options overload:',
+	'  predef: foo,bar',
+	'  properties: false',
+	'  white: false',
+	'JSLINT edition: 2012-05-09',
+    '' // This last line is required
 ].join('\n');
 
 
@@ -296,6 +306,16 @@ exports.suite1 = vows.describe('jsrevival bin').addBatch({
             'Output is valid': function (error, stdout, stderr) {
                 assert.strictEqual(stdout, jslintCOption);
                 assert.strictEqual(stderr, '');
+            }
+        },
+        'When running jsrevival -c option with an invalid file': {
+            topic: function () {
+                run_jsrevival('-r cli-hide-valid-no-color -c foo ' + __dirname + '/Rtest', this.callback);
+            },
+            'it failed': function (error, stdout, stderr) {
+                assert.strictEqual(error.code, 1);
+                assert.strictEqual(stdout, 'Reporter:  cli-hide-valid-no-color\nReading jslint config from:  foo\n');
+                assert.strictEqual(stderr, 'jslint_config_file not found! (foo)\n');
             }
         }
 });
