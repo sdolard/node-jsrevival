@@ -310,7 +310,7 @@ addBatch({
             }
         }
 }).addBatch({
-'When running jsrevival -c and -e option with no env var': {
+'When running jsrevival -r and -e option with no env var': {
 	topic: function () {
 		delete process.env.JSREVIVAL_REPORTER;
 		run_jsrevival('-r cli-hide-valid-no-color -e ' + __dirname + '/Rtest', this.callback);
