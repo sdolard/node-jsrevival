@@ -4,26 +4,26 @@ assert = require('assert'),
 util = require('util'),
 exec = require('child_process').exec,
 help = [
-'jsrevival [-j jslint_file] [ [ [-o jslint_options] [-p prefef] ] || [–c jslint_config_file] ] [-s] [–m] [–v] [-R] [–q]  [ [-r reporterName] || [-e] ] [–h] files directories ... ',
-'jsrevival: a JSLint cli.',
-'Options:',
-'  j: jslint file (overload default)',
-'  o: jslint option (overload default). Ex: -o "unparam: true, vars: false..."',
-'  p: predefined names, which will be used to declare global variables. Ex: -p "foo, bar"',
-'  c: jslint config file (JSON expected)',
-'  m: display jslint default option',
-'  v: verbose mode',
-'  R: run recursively on directories',
-'  s: stop on first file error',
-'  q: quiet. Ex: to use jsrevival in shell script',
-'  e: read reporter config from JSREVIVAL_REPORTER user variable environment (stronger than -r option)',
-'  h: display this help',
-'  r: reporter (default: cli)',
-'     reporter list:',
-'      - cli',
-'      - cli-hide-valid',
-'      - cli-no-color',
-'      - cli-hide-valid-no-color',
+	'jsrevival [-j jslint_file] [ [ [-o jslint_options] [-p prefef] ] || [–c jslint_config_file] ] [-s] [–m] [–v] [-R] [–q]  [ [-r reporterName] || [-e] ] [–h] files directories ... ',
+	'jsrevival: a JSLint cli.',
+	'Options:',
+	'  j: jslint file (overload default)',
+	'  o: jslint option (overload default). Ex: -o "unparam: true, vars: false..."',
+	'  p: predefined names, which will be used to declare global variables. Ex: -p "foo, bar"',
+	'  c: jslint config file (JSON expected)',
+	'  m: display jslint default option',
+	'  v: verbose mode',
+	'  R: run recursively on directories',
+	'  s: stop on first file error',
+	'  q: quiet. Ex: to use jsrevival in shell script',
+	'  e: read reporter config from JSREVIVAL_REPORTER user variable environment (stronger than -r option)',
+	'  h: display this help',
+	'  r: reporter (default: cli)',
+	'     reporter list:',
+	'      - cli',
+	'      - cli-hide-valid',
+	'      - cli-no-color',
+	'      - cli-hide-valid-no-color',
     '' // This last line is required
 ].join('\n'),
 jslintDefaultOption = [
@@ -164,7 +164,8 @@ function run_jsrevival(option, callback) {
     exec(cmdLine, callback);
 }
 
-exports.suite1 = vows.describe('jsrevival bin').addBatch({
+exports.suite1 = vows.describe('jsrevival bin').
+addBatch({
         'When passing no option': {
             topic: function () {
                 run_jsrevival('', this.callback);
@@ -307,15 +308,16 @@ exports.suite1 = vows.describe('jsrevival bin').addBatch({
                 assert.strictEqual(stdout, jslintCOption);
                 assert.strictEqual(stderr, '');
             }
-        },
-        'When running jsrevival -c option with an invalid file': {
-            topic: function () {
-                run_jsrevival('-r cli-hide-valid-no-color -c foo ' + __dirname + '/Rtest', this.callback);
-            },
-            'it failed': function (error, stdout, stderr) {
-                assert.strictEqual(error.code, 1);
-                assert.strictEqual(stdout, 'Reporter:  cli-hide-valid-no-color\nReading jslint config from:  foo\n');
-                assert.strictEqual(stderr, 'jslint_config_file not found! (foo)\n');
-            }
         }
+}).addBatch({
+'When running jsrevival -c and -e option with no env var': {
+	topic: function () {
+		delete process.env.JSREVIVAL_REPORTER;
+		run_jsrevival('-r cli-hide-valid-no-color -e ' + __dirname + '/Rtest', this.callback);
+	},
+	'It use -r option': function (error, stdout, stderr) {
+		assert.strictEqual(stdout, 'Reporter:  cli-hide-valid-no-color\nJSLINT edition: 2012-05-09\n');
+		assert.strictEqual(stderr, '');
+	}
+}
 });
