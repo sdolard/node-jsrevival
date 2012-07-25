@@ -139,7 +139,7 @@ jslintCOption = [
 	'  predef: foo,bar',
 	'  properties: false',
 	'  white: false',
-	'JSLINT edition: 2012-05-09',
+	'JSLINT edition: 2012-07-24',
     '' // This last line is required
 ].join('\n'),
 jslintCOptionInvalid = [
@@ -149,7 +149,7 @@ jslintCOptionInvalid = [
 	'  predef: foo,bar',
 	'  properties: false',
 	'  white: false',
-	'JSLINT edition: 2012-05-09',
+	'JSLINT edition: 2012-07-24',
     '' // This last line is required
 ].join('\n');
 
@@ -295,7 +295,7 @@ addBatch({
                 
             },
             'Output is valid': function (error, stdout, stderr) {
-                assert.strictEqual(stdout, 'Reading reporter from user environment:  cli-no-color\nReporter:  cli-no-color\nJSLINT edition: 2012-05-09\ntest/Rtest/test.js OK\n');
+                assert.strictEqual(stdout, 'Reading reporter from user environment:  cli-no-color\nReporter:  cli-no-color\nJSLINT edition: 2012-07-24\ntest/Rtest/test.js OK\n');
                 assert.strictEqual(stderr, '');
             }
         },
@@ -316,7 +316,7 @@ addBatch({
 		run_jsrevival('-r cli-hide-valid-no-color -e ' + __dirname + '/Rtest', this.callback);
 	},
 	'It use -r option': function (error, stdout, stderr) {
-		assert.strictEqual(stdout, 'Reporter:  cli-hide-valid-no-color\nJSLINT edition: 2012-05-09\n');
+		assert.strictEqual(stdout, 'Reporter:  cli-hide-valid-no-color\nJSLINT edition: 2012-07-24\n');
 		assert.strictEqual(stderr, '');
 	}
 }
