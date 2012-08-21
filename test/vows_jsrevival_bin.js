@@ -3,6 +3,7 @@ vows = require('vows'),
 assert = require('assert'),
 util = require('util'),
 exec = require('child_process').exec,
+JSLINT_VERSION = '2012-08-11',
 help = [
 	'jsrevival [-j jslint_file] [ [ [-o jslint_options] [-p prefef] ] || [–c jslint_config_file] ] [-s] [–m] [–v] [-R] [–q]  [ [-r reporterName] || [-e] ] [–h] files directories ... ',
 	'jsrevival: a JSLint cli.',
@@ -141,7 +142,7 @@ jslintCOption = [
 	'  predef: foo,bar',
 	'  properties: false',
 	'  white: false',
-	'JSLINT edition: 2012-07-24',
+	'JSLINT edition: ' + JSLINT_VERSION,
     '' // This last line is required
 ].join('\n'),
 jslintCOptionInvalid = [
@@ -151,7 +152,7 @@ jslintCOptionInvalid = [
 	'  predef: foo,bar',
 	'  properties: false',
 	'  white: false',
-	'JSLINT edition: 2012-07-24',
+	'JSLINT edition: '+ JSLINT_VERSION,
     '' // This last line is required
 ].join('\n');
 
@@ -297,7 +298,7 @@ addBatch({
                 
             },
             'Output is valid': function (error, stdout, stderr) {
-                assert.strictEqual(stdout, 'Reading reporter from user environment:  cli-no-color\nReporter:  cli-no-color\nJSLINT edition: 2012-07-24\ntest/Rtest/test.js OK\n');
+                assert.strictEqual(stdout, 'Reading reporter from user environment:  cli-no-color\nReporter:  cli-no-color\nJSLINT edition: '+ JSLINT_VERSION + '\ntest/Rtest/test.js OK\n');
                 assert.strictEqual(stderr, '');
             }
         },
@@ -318,7 +319,7 @@ addBatch({
 		run_jsrevival('-r cli-hide-valid-no-color -e ' + __dirname + '/Rtest', this.callback);
 	},
 	'It use -r option': function (error, stdout, stderr) {
-		assert.strictEqual(stdout, 'Reporter:  cli-hide-valid-no-color\nJSLINT edition: 2012-07-24\n');
+		assert.strictEqual(stdout, 'Reporter:  cli-hide-valid-no-color\nJSLINT edition: '+ JSLINT_VERSION + '\n');
 		assert.strictEqual(stderr, '');
 	}
 }
