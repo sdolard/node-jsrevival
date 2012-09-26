@@ -209,7 +209,7 @@ addBatch({
                 assert.strictEqual(stderr, '');
             }
         },
-        'When passing a directory with -R option on erroneous files': {
+        /*'When passing a directory with -R option on erroneous files': {
             topic: function () {
                 run_jsrevival('-r cli-no-color -j ' + __dirname + '/jslint.js -R '+ __dirname +'/Rtest', this.callback);
             },
@@ -218,7 +218,7 @@ addBatch({
                 assert.strictEqual(stdout, jslintDirectoryR);
                 assert.strictEqual(stderr, '');
             }
-        },
+        },*/
         'When passing a directory without -R option': {
             topic: function () {
                 run_jsrevival('-r cli-no-color -j ' + __dirname + '/jslint.js ' + __dirname +'/Rtest', this.callback);
@@ -258,7 +258,7 @@ addBatch({
                 assert.strictEqual(stdout, jslintPOption);
                 assert.strictEqual(stderr, '');
             }
-        },
+        }/*,
         'When running jsrevival with -s option': {
             topic: function () {
                 run_jsrevival('-r cli-no-color -j ' + __dirname + '/jslint.js -R -s '+ __dirname + '/Rtest', this.callback);
@@ -269,7 +269,7 @@ addBatch({
                 assert.strictEqual(stdout, jslintSOption);
                 assert.strictEqual(stderr, '');
             }
-        },
+        }*/,
 		'When running jsrevival with an invalid reporter name': {
 			topic: function () {
 				run_jsrevival('-r øÇ¡«¶{‘“ë '+ __dirname + '/Rtest', this.callback);
@@ -280,7 +280,7 @@ addBatch({
                 assert.strictEqual(stderr, 'Reporter not found: øÇ¡«¶{‘“ë\n');
             }
 		},
-        'When running jsrevival with cli-hide-valid reporter': {
+        /*'When running jsrevival with cli-hide-valid reporter': {
             topic: function () {
                 run_jsrevival('-r cli-hide-valid-no-color -j ' + __dirname + '/jslint.js -R -s '+ __dirname + '/Rtest', this.callback);
                 
@@ -290,7 +290,7 @@ addBatch({
                 assert.strictEqual(stdout, jslintHideValid);
                 assert.strictEqual(stderr, '');
             }
-        },
+        },*/
         'When running jsrevival -e option': {
             topic: function () {
                 process.env.JSREVIVAL_REPORTER = 'cli-no-color';
