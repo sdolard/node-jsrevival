@@ -319,7 +319,7 @@ addBatch({
             	run_jsrevival(
             		util.format('-r cli-hide-valid-no-color -c %s %s', 
             			path.relative(process.cwd(), __dirname + '/jslint_conf.json'), 
-            			path.relative(process.cwd(), __dirname +'/RTest')
+            			path.relative(process.cwd(), __dirname +'/Rtest')
             			), 
             		this.callback);
                 
