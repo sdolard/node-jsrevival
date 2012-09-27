@@ -159,176 +159,172 @@ jslintCOptionInvalid = [
 
 
 function run_jsrevival(option, callback) {
-    //console.log('option: %s', option);
-    
-    var cmdLine= util.format('node %s %s',
-        path.relative(process.cwd(), __dirname + '/../bin/jsrevival.js'),
-        option);
-    //console.error(cmdLine);
-    exec(cmdLine, callback);
-    return cmdLine;
+	//console.log('option: %s', option);
+	
+	var cmdLine= util.format('node %s %s',
+		path.relative(process.cwd(), __dirname + '/../bin/jsrevival.js'),
+		option);
+	//console.error(cmdLine);
+	exec(cmdLine, callback);
+	return cmdLine;
 }
 
 exports.suite1 = vows.describe('jsrevival bin').
 addBatch({
-        'When passing no option': {
-            topic: function () {
-                run_jsrevival('', this.callback);
-            },
-            'help is displayed to stdout and exit code equal 1': function (error, stdout, stderr) {
-                assert.strictEqual(error.code, 1);
-                assert.strictEqual(stdout, help);
-                assert.strictEqual(stderr, '');
-            }
-        },'When passing -h option': {
-            topic: function () {
-                run_jsrevival('-h ', this.callback);
-            },
-            'help is displayed to stdout': function (error, stdout, stderr) {
-                assert.isNull(error);
-                assert.strictEqual(stdout, help);
-                assert.strictEqual(stderr, '');
-            }
-        },
-        'When passing -m option': {
-            topic: function () {
-                // We disable color for test
-                run_jsrevival('-m ', this.callback);
-            },
-            'jslint default option is displayed to stdout': function (error, stdout, stderr) {
-                assert.isNull(error);
-                assert.strictEqual(stdout, jslintDefaultOption);
-                assert.strictEqual(stderr, '');
-            }
-        },
-        'When passing -j option': {
-            topic: function () {
-                run_jsrevival('-r cli-no-color -j ' + __dirname + '/jslint.js -o "properties: false" '+ __filename, this.callback);
-            },
-            'jsrevival use -j param jslint.js file': function (error, stdout, stderr) {
-                assert.isNull(error);
-                assert.strictEqual(stdout, jslintJOption);
-                assert.strictEqual(stderr, '');
-            }
-        },
-        /*'When passing a directory with -R option on erroneous files': {
-            topic: function () {
-                run_jsrevival('-r cli-no-color -j ' + __dirname + '/jslint.js -R '+ __dirname +'/Rtest', this.callback);
-            },
-            'jsrevival read directories recursively': function (error, stdout, stderr) {
-                assert.strictEqual(error.code, 1);
-                assert.strictEqual(stdout, jslintDirectoryR);
-                assert.strictEqual(stderr, '');
-            }
-        },*/
-        'When passing a directory without -R option': {
-            topic: function () {
-                run_jsrevival('-r cli-no-color -j ' + __dirname + '/jslint.js ' + __dirname +'/Rtest', this.callback);
-            },
-            'jsrevival doesn`t read directories recursively': function (error, stdout, stderr) {
-                assert.isNull(error);
-                assert.strictEqual(stdout, jslintDirectory);
-                assert.strictEqual(stderr, '');
-            }
-        },
-        'When running jsrevival with -q option ': {
-            topic: function () {
-                run_jsrevival('-q -r cli-no-color -o "properties: false" '+ __filename, this.callback);
-            },
-            'nothing is written on stdout or stderr': function (error, stdout, stderr) {
-                assert.isNull(error);
-                assert.strictEqual(stdout, '');
-                assert.strictEqual(stderr, '');
-            }
-        },
-        'When running jsrevival with -o option and overloading a param with another value than original': {
-            topic: function () {
-                run_jsrevival('-r cli-no-color -j ' + __dirname + '/jslint.js -o "properties: false, stupid: true" '+ __filename, this.callback);
-            },
-            'It warns': function (error, stdout, stderr) {
-                assert.isNull(error);
-                assert.strictEqual(stdout, jslintOptionOverloadWarnings);
-                assert.strictEqual(stderr, '');
-            }
-        },
-        'When running jsrevival with -p option': {
-            topic: function () {
-                run_jsrevival('-r cli-no-color -j ' + __dirname + '/jslint.js -o "undef: false" -p "b,c" '+ __dirname + '/Rtest', this.callback);
-            },
-            'predefined names, which will be used to declare global variables':function (error, stdout, stderr) {
-                assert.isNull(error);
-                assert.strictEqual(stdout, jslintPOption);
-                assert.strictEqual(stderr, '');
-            }
-        }/*,
-        'When running jsrevival with -s option': {
-            topic: function () {
-                run_jsrevival('-r cli-no-color -j ' + __dirname + '/jslint.js -R -s '+ __dirname + '/Rtest', this.callback);
-                
-            },
-            'it stops on first file error': function (error, stdout, stderr) {
-                assert.strictEqual(error.code, 1);
-                assert.strictEqual(stdout, jslintSOption);
-                assert.strictEqual(stderr, '');
-            }
-        }*/,
+		'When passing no option': {
+			topic: function () {
+				run_jsrevival('', this.callback);
+			},
+			'help is displayed to stdout and exit code equal 1': function (error, stdout, stderr) {
+				assert.strictEqual(error.code, 1);
+				assert.strictEqual(stdout, help);
+				assert.strictEqual(stderr, '');
+			}
+		},'When passing -h option': {
+			topic: function () {
+				run_jsrevival('-h ', this.callback);
+			},
+			'help is displayed to stdout': function (error, stdout, stderr) {
+				assert.isNull(error);
+				assert.strictEqual(stdout, help);
+				assert.strictEqual(stderr, '');
+			}
+		},
+		'When passing -m option': {
+			topic: function () {
+				// We disable color for test
+				run_jsrevival('-m ', this.callback);
+			},
+			'jslint default option is displayed to stdout': function (error, stdout, stderr) {
+				assert.isNull(error);
+				assert.strictEqual(stdout, jslintDefaultOption);
+				assert.strictEqual(stderr, '');
+			}
+		},
+		'When passing -j option': {
+			topic: function () {
+				run_jsrevival('-r cli-no-color -j ' + __dirname + '/jslint.js -o "properties: false" '+ __filename, this.callback);
+			},
+			'jsrevival use -j param jslint.js file': function (error, stdout, stderr) {
+				assert.isNull(error);
+				assert.strictEqual(stdout, jslintJOption);
+				assert.strictEqual(stderr, '');
+			}
+		},
+		/*'When passing a directory with -R option on erroneous files': {
+		topic: function () {
+		run_jsrevival('-r cli-no-color -j ' + __dirname + '/jslint.js -R '+ __dirname +'/Rtest', this.callback);
+		},
+		'jsrevival read directories recursively': function (error, stdout, stderr) {
+		assert.strictEqual(error.code, 1);
+		assert.strictEqual(stdout, jslintDirectoryR);
+		assert.strictEqual(stderr, '');
+		}
+		},*/
+		'When passing a directory without -R option': {
+			topic: function () {
+				run_jsrevival('-r cli-no-color -j ' + __dirname + '/jslint.js ' + __dirname +'/Rtest', this.callback);
+			},
+			'jsrevival doesn`t read directories recursively': function (error, stdout, stderr) {
+				assert.isNull(error);
+				assert.strictEqual(stdout, jslintDirectory);
+				assert.strictEqual(stderr, '');
+			}
+		},
+		'When running jsrevival with -q option ': {
+			topic: function () {
+				run_jsrevival('-q -r cli-no-color -o "properties: false" '+ __filename, this.callback);
+			},
+			'nothing is written on stdout or stderr': function (error, stdout, stderr) {
+				assert.isNull(error);
+				assert.strictEqual(stdout, '');
+				assert.strictEqual(stderr, '');
+			}
+		},
+		'When running jsrevival with -o option and overloading a param with another value than original': {
+			topic: function () {
+				run_jsrevival('-r cli-no-color -j ' + __dirname + '/jslint.js -o "properties: false, stupid: true" '+ __filename, this.callback);
+			},
+			'It warns': function (error, stdout, stderr) {
+				assert.isNull(error);
+				assert.strictEqual(stdout, jslintOptionOverloadWarnings);
+				assert.strictEqual(stderr, '');
+			}
+		},
+		'When running jsrevival with -p option': {
+			topic: function () {
+				run_jsrevival('-r cli-no-color -j ' + __dirname + '/jslint.js -o "undef: false" -p "b,c" '+ __dirname + '/Rtest', this.callback);
+			},
+			'predefined names, which will be used to declare global variables':function (error, stdout, stderr) {
+				assert.isNull(error);
+				assert.strictEqual(stdout, jslintPOption);
+				assert.strictEqual(stderr, '');
+			}
+		}/*,
+		'When running jsrevival with -s option': {
+		topic: function () {
+		run_jsrevival('-r cli-no-color -j ' + __dirname + '/jslint.js -R -s '+ __dirname + '/Rtest', this.callback);
+		
+		},
+		'it stops on first file error': function (error, stdout, stderr) {
+		assert.strictEqual(error.code, 1);
+		assert.strictEqual(stdout, jslintSOption);
+		assert.strictEqual(stderr, '');
+		}
+		}*/,
 		'When running jsrevival with an invalid reporter name': {
 			topic: function () {
 				run_jsrevival('-r øÇ¡«¶{‘“ë '+ __dirname + '/Rtest', this.callback);
-            }, 
-            'it stops ': function (error, stdout, stderr) {
-                assert.strictEqual(error.code, 1);
-                assert.strictEqual(stdout, '');
-                assert.strictEqual(stderr, 'Reporter not found: øÇ¡«¶{‘“ë\n');
-            }
+			}, 
+			'it stops ': function (error, stdout, stderr) {
+				assert.strictEqual(error.code, 1);
+				assert.strictEqual(stdout, '');
+				assert.strictEqual(stderr, 'Reporter not found: øÇ¡«¶{‘“ë\n');
+			}
+		},/*
+		'When running jsrevival with cli-hide-valid reporter': {
+		topic: function () {
+		console.log(run_jsrevival('-r cli-hide-valid-no-color -j ' + __dirname + '/jslint.js -R -s '+ __dirname + '/Rtest', this.callback));
+		
 		},
-        /*'When running jsrevival with cli-hide-valid reporter': {
-            topic: function () {
-                run_jsrevival('-r cli-hide-valid-no-color -j ' + __dirname + '/jslint.js -R -s '+ __dirname + '/Rtest', this.callback);
-                
-            },
-            'Output is valid': function (error, stdout, stderr) {
-                assert.strictEqual(error.code, 1);
-                assert.strictEqual(stdout, jslintHideValid);
-                assert.strictEqual(stderr, '');
-            }
-        },*/
-        'When running jsrevival -e option': {
-            topic: function () {
-                process.env.JSREVIVAL_REPORTER = 'cli-no-color';
-                run_jsrevival(
-                	util.format('-e %s', 
-                		path.relative(process.cwd(), __dirname +'/Rtest')
-                		),
-                	this.callback);
-                
-            },
-            'Output is valid': function (error, stdout, stderr) {
-                assert.strictEqual(stdout, [
-                		'Reading reporter from user environment:  cli-no-color\n',
-                		'Reporter:  cli-no-color\n',
-                		'JSLINT edition: '+ JSLINT_VERSION + '\n',
-                		util.format('%s/test.js OK\n', path.relative(process.cwd(), __dirname +'/Rtest'))
-                ].join('')
-                );
-                assert.strictEqual(stderr, '');
-            }
-        },
-        'When running jsrevival -c option': {
-            topic: function () {
-            	run_jsrevival(
-            		util.format('-r cli-hide-valid-no-color -c %s %s', 
-            			path.relative(process.cwd(), __dirname + '/jslint_conf.json'), 
-            			path.relative(process.cwd(), __dirname +'/Rtest')
-            			), 
-            		this.callback);
-                
-            },
-            'Output is valid': function (error, stdout, stderr) {
-            	assert.strictEqual(stdout, jslintCOption);
-                assert.strictEqual(stderr, '');
-            }
-        }
+		'Output is valid': function (error, stdout, stderr) {
+		assert.strictEqual(error.code, 1);
+		assert.strictEqual(stdout, jslintHideValid);
+		assert.strictEqual(stderr, '');
+		}
+		},*/
+		'When running jsrevival -e option': {
+			topic: function () {
+				process.env.JSREVIVAL_REPORTER = 'cli-no-color';
+				console.log(run_jsrevival(util.format('-e %s', path.relative(process.cwd(), __dirname +'/Rtest')), this.callback));
+				
+			},
+			'Output is valid': function (error, stdout, stderr) {
+				assert.strictEqual(stdout, [
+						'Reading reporter from user environment:  cli-no-color\n',
+						'Reporter:  cli-no-color\n',
+						'JSLINT edition: '+ JSLINT_VERSION + '\n',
+						util.format('%s/test.js OK\n', path.relative(process.cwd(), __dirname +'/Rtest'))
+				].join('')
+				);
+				assert.strictEqual(stderr, '');
+			}
+		},
+		'When running jsrevival -c option': {
+			topic: function () {
+				run_jsrevival(
+					util.format('-r cli-hide-valid-no-color -c %s %s', 
+						path.relative(process.cwd(), __dirname + '/jslint_conf.json'), 
+						path.relative(process.cwd(), __dirname +'/Rtest')
+						), 
+					this.callback);
+				
+			},
+			'Output is valid': function (error, stdout, stderr) {
+				assert.strictEqual(stdout, jslintCOption);
+				assert.strictEqual(stderr, '');
+			}
+		}
 }).addBatch({
 'When running jsrevival -r and -e option with no env var': {
 	topic: function () {
