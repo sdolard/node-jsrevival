@@ -3,6 +3,7 @@ vows = require('vows'),
 assert = require('assert'),
 util = require('util'),
 exec = require('child_process').exec,
+path = require('path'),
 JSLINT_VERSION = '2012-08-11',
 help = [
 	'jsrevival [-j jslint_file] [ [ [-o jslint_options] [-p prefef] ] || [–c jslint_config_file] ] [-s] [–m] [–v] [-R] [–q]  [ [-r reporterName] || [-e] ] [–h] files directories ... ',
@@ -72,7 +73,7 @@ jslintJOption = [
     'JSLint default options overload:',
     '  properties: false',
     'JSLINT edition: 2012-01-25',
-    'test/vows_jsrevival_bin.js OK',
+    util.format('%s OK', path.relative(process.cwd(), __dirname +'/vows_jsrevival_bin.js')),
     '' // This last line is required
 ].join('\n'),
 jslintDirectoryR = [
@@ -91,7 +92,7 @@ jslintDirectoryR = [
 jslintDirectory = [
 	'Reporter:  cli-no-color',
     'JSLINT edition: 2012-01-25',
-    'test/Rtest/test.js OK',
+    util.format('%s OK', path.relative(process.cwd(), __dirname +'/Rtest/test.js')),
     '' // This last line is required
 ].join('\n'),
 jslintOptionOverloadWarnings = [
@@ -100,7 +101,7 @@ jslintOptionOverloadWarnings = [
     'JSLint default options overload:',
     '  properties: false',
     'JSLINT edition: 2012-01-25',
-    'test/vows_jsrevival_bin.js OK',
+    util.format('%s OK', path.relative(process.cwd(), __dirname +'/vows_jsrevival_bin.js')),
     '' // This last line is required
 ].join('\n'),
 jslintSOption = [
@@ -121,7 +122,7 @@ jslintPOption = [
     '  undef: false',
     '  predef: b,c',
     'JSLINT edition: 2012-01-25',
-    'test/Rtest/test.js OK',
+    util.format('%s OK', path.relative(process.cwd(), __dirname +'/Rtest/test.js')),
     '' // This last line is required
 ].join('\n'),
 jslintHideValid = [
@@ -137,7 +138,7 @@ jslintHideValid = [
 
 jslintCOption = [
 	'Reporter:  cli-hide-valid-no-color',
-	'Reading jslint config from:  test/jslint_conf.json',
+	'Reading jslint config from:  '+ path.relative(process.cwd(), __dirname + '/jslint_conf.json'), 
 	'JSLint default options overload:',
 	'  predef: foo,bar',
 	'  properties: false',
@@ -147,7 +148,7 @@ jslintCOption = [
 ].join('\n'),
 jslintCOptionInvalid = [
 	'Reporter:  cli-hide-valid-no-color',
-	'Reading jslint config from:  test/jslint_conf.json',
+	'Reading jslint config from:  '+ path.relative(process.cwd(), __dirname + '/jslint_conf.json'), 
 	'JSLint default options overload:',
 	'  predef: foo,bar',
 	'  properties: false',
@@ -160,11 +161,12 @@ jslintCOptionInvalid = [
 function run_jsrevival(option, callback) {
     //console.log('option: %s', option);
     
-    var cmdLine= util.format('node %s/../bin/jsrevival.js %s',
-        __dirname,
+    var cmdLine= util.format('node %s %s',
+        path.relative(process.cwd(), __dirname + '/../bin/jsrevival.js'),
         option);
     //console.error(cmdLine);
     exec(cmdLine, callback);
+    return cmdLine;
 }
 
 exports.suite1 = vows.describe('jsrevival bin').
@@ -294,21 +296,36 @@ addBatch({
         'When running jsrevival -e option': {
             topic: function () {
                 process.env.JSREVIVAL_REPORTER = 'cli-no-color';
-                run_jsrevival('-e '+ __dirname + '/Rtest', this.callback);
+                run_jsrevival(
+                	util.format('-e %s', 
+                		path.relative(process.cwd(), __dirname +'/Rtest')
+                		),
+                	this.callback);
                 
             },
             'Output is valid': function (error, stdout, stderr) {
-                assert.strictEqual(stdout, 'Reading reporter from user environment:  cli-no-color\nReporter:  cli-no-color\nJSLINT edition: '+ JSLINT_VERSION + '\ntest/Rtest/test.js OK\n');
+                assert.strictEqual(stdout, [
+                		'Reading reporter from user environment:  cli-no-color\n',
+                		'Reporter:  cli-no-color\n',
+                		'JSLINT edition: '+ JSLINT_VERSION + '\n',
+                		util.format('%s/test.js OK\n', path.relative(process.cwd(), __dirname +'/Rtest'))
+                ].join('')
+                );
                 assert.strictEqual(stderr, '');
             }
         },
         'When running jsrevival -c option': {
             topic: function () {
-                run_jsrevival('-r cli-hide-valid-no-color -c test/jslint_conf.json ' + __dirname + '/Rtest', this.callback);
+            	run_jsrevival(
+            		util.format('-r cli-hide-valid-no-color -c %s %s', 
+            			path.relative(process.cwd(), __dirname + '/jslint_conf.json'), 
+            			path.relative(process.cwd(), __dirname +'/RTest')
+            			), 
+            		this.callback);
                 
             },
             'Output is valid': function (error, stdout, stderr) {
-                assert.strictEqual(stdout, jslintCOption);
+            	assert.strictEqual(stdout, jslintCOption);
                 assert.strictEqual(stderr, '');
             }
         }
