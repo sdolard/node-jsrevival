@@ -79,16 +79,16 @@ jslintJOption = [
 jslintDirectoryR = [
 	'Reporter:  cli-no-color',
     'JSLINT edition: 2012-01-25',
-    'test/Rtest/test.js OK',
-    'test/Rtest/A/testA.js KO',
+    util.format('%s OK', path.relative(process.cwd(),  __dirname + '/Rtest/test.js')),
+    util.format('%s KO', path.relative(process.cwd(),  __dirname + '/Rtest/A/testA.js')),
     'testA.js> (error) line 1(6): Expected \';\' and instead saw \'(end)\'. "a = 1"',
-    'testA.js> Stopping.  (100% scanned).',
-    'test/Rtest/B/testB.js KO',
+    'testA.js> Stopping. (100% scanned).',
+    util.format('%s KO', path.relative(process.cwd(),  __dirname + '/Rtest/B/testB.js')),
     'testB.js> (error) line 1(6): Expected \';\' and instead saw \'(end)\'. "b = 2"',
-    'testB.js> Stopping.  (100% scanned).',
+    'testB.js> Stopping. (100% scanned).',
     '4 errors on 2/3 files',
     '' // This last line is required
-].join('\n'),
+],
 jslintDirectory = [
 	'Reporter:  cli-no-color',
     'JSLINT edition: 2012-01-25',
@@ -108,13 +108,23 @@ jslintSOption = [
 	'Reporter:  cli-no-color',
     'Stop on first file error enabled',
     'JSLINT edition: 2012-01-25',
-    'test/Rtest/test.js OK',
-    'test/Rtest/A/testA.js KO',
+     util.format('%s OK', path.relative(process.cwd(), __dirname +'/Rtest/test.js')),
+     
+     // A
+     util.format('%s KO', path.relative(process.cwd(), __dirname +'/Rtest/A/testA.js')),
     'testA.js> (error) line 1(6): Expected \';\' and instead saw \'(end)\'. "a = 1"',
-    'testA.js> Stopping.  (100% scanned).',
-    '2 errors on 1/2 files',
+    'testA.js> Stopping. (100% scanned).',     
+    
+    // B
+    util.format('%s KO', path.relative(process.cwd(), __dirname +'/Rtest/B/testB.js')),
+    'testB.js> (error) line 1(6): Expected \';\' and instead saw \'(end)\'. "b = 2"',
+    'testB.js> Stopping. (100% scanned).',
+    
+    // 2 possible end
+    '2 errors on 1/2 files', 
+    '2 errors on 1/1 file',
     '' // This last line is required
-].join('\n'),
+],
 jslintPOption = [
 	'Reporter:  cli-no-color',
 	'Reading jslint config from command line',
@@ -129,12 +139,21 @@ jslintHideValid = [
 	'Reporter:  cli-hide-valid-no-color',
     'Stop on first file error enabled',
     'JSLINT edition: 2012-01-25',
-    'test/Rtest/A/testA.js KO',
+     // A
+     util.format('%s KO', path.relative(process.cwd(), __dirname +'/Rtest/A/testA.js')),
     'testA.js> (error) line 1(6): Expected \';\' and instead saw \'(end)\'. "a = 1"',
-    'testA.js> Stopping.  (100% scanned).',
+    'testA.js> Stopping. (100% scanned).',     
+    
+    // B
+    util.format('%s KO', path.relative(process.cwd(), __dirname +'/Rtest/B/testB.js')),
+    'testB.js> (error) line 1(6): Expected \';\' and instead saw \'(end)\'. "b = 2"',
+    'testB.js> Stopping. (100% scanned).',
+    
+    // 2 possible end
     '2 errors on 1/2 files',
+    '2 errors on 1/1 file',
     '' // This last line is required
-].join('\n'),
+],
 
 jslintCOption = [
 	'Reporter:  cli-hide-valid-no-color',
@@ -211,16 +230,22 @@ addBatch({
 				assert.strictEqual(stderr, '');
 			}
 		},
-		/*'When passing a directory with -R option on erroneous files': {
-		topic: function () {
-		run_jsrevival('-r cli-no-color -j ' + __dirname + '/jslint.js -R '+ __dirname +'/Rtest', this.callback);
+		'When passing a directory with -R option on erroneous files': {
+			topic: function () {
+				run_jsrevival(util.format('-r cli-no-color -j %s -R %s',
+					path.relative(process.cwd(), __dirname + '/jslint.js'),
+					path.relative(process.cwd(),  __dirname + '/Rtest')),
+					this.callback);
+			},
+			'jsrevival read directories recursively': function (error, stdout, stderr) {
+				assert.strictEqual(error.code, 1);
+				var out = stdout.split('\n');
+				out.forEach(function(line) {
+						assert.include (jslintDirectoryR, line);
+				});
+				assert.strictEqual(stderr, '');
+			}
 		},
-		'jsrevival read directories recursively': function (error, stdout, stderr) {
-		assert.strictEqual(error.code, 1);
-		assert.strictEqual(stdout, jslintDirectoryR);
-		assert.strictEqual(stderr, '');
-		}
-		},*/
 		'When passing a directory without -R option': {
 			topic: function () {
 				run_jsrevival('-r cli-no-color -j ' + __dirname + '/jslint.js ' + __dirname +'/Rtest', this.callback);
@@ -260,18 +285,21 @@ addBatch({
 				assert.strictEqual(stdout, jslintPOption);
 				assert.strictEqual(stderr, '');
 			}
-		}/*,
-		'When running jsrevival with -s option': {
-		topic: function () {
-		run_jsrevival('-r cli-no-color -j ' + __dirname + '/jslint.js -R -s '+ __dirname + '/Rtest', this.callback);
-		
 		},
-		'it stops on first file error': function (error, stdout, stderr) {
-		assert.strictEqual(error.code, 1);
-		assert.strictEqual(stdout, jslintSOption);
-		assert.strictEqual(stderr, '');
-		}
-		}*/,
+		'When running jsrevival with -s option': {
+			topic: function () {
+				run_jsrevival('-r cli-no-color -j ' + __dirname + '/jslint.js -R -s '+ __dirname + '/Rtest', this.callback);
+			},
+			'it stops on first file error': function (error, stdout, stderr) {
+				assert.strictEqual(error.code, 1);
+				//console.log('stdout: ', stdout); 
+				var out = stdout.split('\n');
+				out.forEach(function(line) {
+						assert.include (jslintSOption, line);
+				});
+				assert.strictEqual(stderr, '');
+			}
+		},
 		'When running jsrevival with an invalid reporter name': {
 			topic: function () {
 				run_jsrevival('-r øÇ¡«¶{‘“ë '+ __dirname + '/Rtest', this.callback);
@@ -281,22 +309,24 @@ addBatch({
 				assert.strictEqual(stdout, '');
 				assert.strictEqual(stderr, 'Reporter not found: øÇ¡«¶{‘“ë\n');
 			}
-		},/*
-		'When running jsrevival with cli-hide-valid reporter': {
-		topic: function () {
-		console.log(run_jsrevival('-r cli-hide-valid-no-color -j ' + __dirname + '/jslint.js -R -s '+ __dirname + '/Rtest', this.callback));
-		
 		},
-		'Output is valid': function (error, stdout, stderr) {
-		assert.strictEqual(error.code, 1);
-		assert.strictEqual(stdout, jslintHideValid);
-		assert.strictEqual(stderr, '');
-		}
-		},*/
+		'When running jsrevival with cli-hide-valid reporter': {
+			topic: function () {
+				run_jsrevival('-r cli-hide-valid-no-color -j ' + __dirname + '/jslint.js -R -s '+ __dirname + '/Rtest', this.callback);
+			},
+			'Output is valid': function (error, stdout, stderr) {
+				assert.strictEqual(error.code, 1);
+				var out = stdout.split('\n');
+				out.forEach(function(line) {
+						assert.include (jslintHideValid, line);
+				});
+				assert.strictEqual(stderr, '');
+			}
+		},
 		'When running jsrevival -e option': {
 			topic: function () {
 				process.env.JSREVIVAL_REPORTER = 'cli-no-color';
-				console.log(run_jsrevival(util.format('-e %s', path.relative(process.cwd(), __dirname +'/Rtest')), this.callback));
+				run_jsrevival(util.format('-e %s', path.relative(process.cwd(), __dirname +'/Rtest')), this.callback);
 				
 			},
 			'Output is valid': function (error, stdout, stderr) {
