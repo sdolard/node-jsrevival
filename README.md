@@ -41,6 +41,7 @@ Options:
       - cli-hide-valid
       - cli-no-color
       - cli-hide-valid-no-color
+      - sublime-text
 
 
 ```
