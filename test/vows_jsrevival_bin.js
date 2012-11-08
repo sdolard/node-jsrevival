@@ -26,6 +26,7 @@ help = [
 	'      - cli-hide-valid',
 	'      - cli-no-color',
 	'      - cli-hide-valid-no-color',
+	'      - sublime-text',
     '' // This last line is required
 ].join('\n'),
 jslintDefaultOption = [
@@ -154,7 +155,24 @@ jslintHideValid = [
     '2 errors on 1/1 file',
     '' // This last line is required
 ],
-
+jslintSublimeText = [
+	'Reporter:  sublime-text',
+    'Stop on first file error enabled',
+    'JSLINT edition: 2012-01-25',
+    'test/Rtest/test.js OK',
+     // A
+    'testA.js# (error) l1:6> Expected \';\' and instead saw \'(end)\'. "a = 1"',
+    'testA.js# Stopping. (100% scanned).',     
+    
+    // B
+    'testB.js# (error) l1:6> Expected \';\' and instead saw \'(end)\'. "b = 2"',
+    'testB.js# Stopping. (100% scanned).',
+    
+    // 2 possible end
+    '2 errors on 1/2 files',
+    '2 errors on 1/1 file',
+    '' // This last line is required
+],
 jslintCOption = [
 	'Reporter:  cli-hide-valid-no-color',
 	'Reading jslint config from:  '+ path.relative(process.cwd(), __dirname + '/jslint_conf.json'), 
@@ -319,6 +337,19 @@ addBatch({
 				var out = stdout.split('\n');
 				out.forEach(function(line) {
 						assert.include (jslintHideValid, line);
+				});
+				assert.strictEqual(stderr, '');
+			}
+		},
+		'When running jsrevival with sublime-text': {
+			topic: function () {
+				run_jsrevival('-r sublime-text -j ' + __dirname + '/jslint.js -R -s '+ __dirname + '/Rtest', this.callback);
+			},
+			'Output is valid': function (error, stdout, stderr) {
+				assert.strictEqual(error.code, 1);
+				var out = stdout.split('\n');
+				out.forEach(function(line) {
+						assert.include (jslintSublimeText, line);
 				});
 				assert.strictEqual(stderr, '');
 			}
