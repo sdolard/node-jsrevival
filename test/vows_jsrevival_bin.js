@@ -4,7 +4,7 @@ assert = require('assert'),
 util = require('util'),
 exec = require('child_process').exec,
 path = require('path'),
-JSLINT_VERSION = '2012-09-27',
+JSLINT_VERSION = '2012-10-18',
 help = [
 	'jsrevival [-j jslint_file] [ [ [-o jslint_options] [-p prefef] ] || [–c jslint_config_file] ] [-s] [–m] [–v] [-R] [–q]  [ [-r reporterName] || [-e] ] [–h] files directories ... ',
 	'jsrevival: a JSLint cli.',
