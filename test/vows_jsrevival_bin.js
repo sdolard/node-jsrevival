@@ -159,13 +159,13 @@ jslintSublimeText = [
 	'Reporter:  sublime-text',
     'Stop on first file error enabled',
     'JSLINT edition: 2012-01-25',
-    'test/Rtest/test.js OK',
+    'test.js# OK',
      // A
-    'testA.js# (error) l1:6> Expected \';\' and instead saw \'(end)\'. "a = 1"',
+    'testA.js# l1:6>(error) Expected \';\' and instead saw \'(end)\'. "a = 1"',
     'testA.js# Stopping. (100% scanned).',     
     
     // B
-    'testB.js# (error) l1:6> Expected \';\' and instead saw \'(end)\'. "b = 2"',
+    'testB.js# l1:6>(error) Expected \';\' and instead saw \'(end)\'. "b = 2"',
     'testB.js# Stopping. (100% scanned).',
     
     // 2 possible end
@@ -240,7 +240,7 @@ addBatch({
 		},
 		'When passing -j option': {
 			topic: function () {
-				run_jsrevival('-r cli-no-color -j ' + __dirname + '/jslint.js -o "properties: false" '+ __filename, this.callback);
+				run_jsrevival('-r cli-no-color -j ' + __dirname + '/../contrib/jslint_2012-01-25.js -o "properties: false" '+ __filename, this.callback);
 			},
 			'jsrevival use -j param jslint.js file': function (error, stdout, stderr) {
 				assert.isNull(error);
@@ -251,7 +251,7 @@ addBatch({
 		'When passing a directory with -R option on erroneous files': {
 			topic: function () {
 				run_jsrevival(util.format('-r cli-no-color -j %s -R %s',
-					path.relative(process.cwd(), __dirname + '/jslint.js'),
+					path.relative(process.cwd(), __dirname + '/../contrib/jslint_2012-01-25.js'),
 					path.relative(process.cwd(),  __dirname + '/Rtest')),
 					this.callback);
 			},
@@ -266,7 +266,7 @@ addBatch({
 		},
 		'When passing a directory without -R option': {
 			topic: function () {
-				run_jsrevival('-r cli-no-color -j ' + __dirname + '/jslint.js ' + __dirname +'/Rtest', this.callback);
+				run_jsrevival('-r cli-no-color -j ' + __dirname + '/../contrib/jslint_2012-01-25.js ' + __dirname +'/Rtest', this.callback);
 			},
 			'jsrevival doesn`t read directories recursively': function (error, stdout, stderr) {
 				assert.isNull(error);
@@ -286,7 +286,7 @@ addBatch({
 		},
 		'When running jsrevival with -o option and overloading a param with another value than original': {
 			topic: function () {
-				run_jsrevival('-r cli-no-color -j ' + __dirname + '/jslint.js -o "properties: false, stupid: true" '+ __filename, this.callback);
+				run_jsrevival('-r cli-no-color -j ' + __dirname + '/../contrib/jslint_2012-01-25.js -o "properties: false, stupid: true" '+ __filename, this.callback);
 			},
 			'It warns': function (error, stdout, stderr) {
 				assert.isNull(error);
@@ -296,7 +296,7 @@ addBatch({
 		},
 		'When running jsrevival with -p option': {
 			topic: function () {
-				run_jsrevival('-r cli-no-color -j ' + __dirname + '/jslint.js -o "undef: false" -p "b,c" '+ __dirname + '/Rtest', this.callback);
+				run_jsrevival('-r cli-no-color -j ' + __dirname + '/../contrib/jslint_2012-01-25.js -o "undef: false" -p "b,c" '+ __dirname + '/Rtest', this.callback);
 			},
 			'predefined names, which will be used to declare global variables':function (error, stdout, stderr) {
 				assert.isNull(error);
@@ -306,7 +306,7 @@ addBatch({
 		},
 		'When running jsrevival with -s option': {
 			topic: function () {
-				run_jsrevival('-r cli-no-color -j ' + __dirname + '/jslint.js -R -s '+ __dirname + '/Rtest', this.callback);
+				run_jsrevival('-r cli-no-color -j ' + __dirname + '/../contrib/jslint_2012-01-25.js -R -s '+ __dirname + '/Rtest', this.callback);
 			},
 			'it stops on first file error': function (error, stdout, stderr) {
 				assert.strictEqual(error.code, 1);
@@ -330,7 +330,7 @@ addBatch({
 		},
 		'When running jsrevival with cli-hide-valid reporter': {
 			topic: function () {
-				run_jsrevival('-r cli-hide-valid-no-color -j ' + __dirname + '/jslint.js -R -s '+ __dirname + '/Rtest', this.callback);
+				run_jsrevival('-r cli-hide-valid-no-color -j ' + __dirname + '/../contrib/jslint_2012-01-25.js -R -s '+ __dirname + '/Rtest', this.callback);
 			},
 			'Output is valid': function (error, stdout, stderr) {
 				assert.strictEqual(error.code, 1);
@@ -343,7 +343,7 @@ addBatch({
 		},
 		'When running jsrevival with sublime-text': {
 			topic: function () {
-				run_jsrevival('-r sublime-text -j ' + __dirname + '/jslint.js -R -s '+ __dirname + '/Rtest', this.callback);
+				run_jsrevival('-r sublime-text -j ' + __dirname + '/../contrib/jslint_2012-01-25.js -R -s '+ __dirname + '/Rtest', this.callback);
 			},
 			'Output is valid': function (error, stdout, stderr) {
 				assert.strictEqual(error.code, 1);

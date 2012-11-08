@@ -2,7 +2,7 @@
 	"author": "Sébastien Dolard <sdolard@gmail.com>",
 	"name": "jsrevival",
 	"description": "A javascript lib and cli linter using JSLint",
-	"version": "0.1.3",
+	"version": "0.1.4",
 	"homepage": "https://github.com/sdolard/node-jsrevival",
 	"keywords": [
 		"jslint",
@@ -15,7 +15,7 @@
 	},
 	"scripts": {
 		"test": "vows test/vows* --spec",
-		"posttest": "node bin/jsrevival -o \"properties: false, maxlen: 0, debug: false, vars: false\" -R lib/jsrevival-app.js lib/jsrevival.js test/vows_jsrevival_bin.js test/vows_jsrevival_lib.js"
+		"posttest": "bin/jsrevival.js -o \"properties: false, maxlen: 0, debug: false, vars: false, passfail: false\" -R lib/"
 	},
 	"bin": {
 		"jsrevival": "./bin/jsrevival.js"
