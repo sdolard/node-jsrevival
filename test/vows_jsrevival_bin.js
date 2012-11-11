@@ -2,12 +2,14 @@ var
 vows = require('vows'),
 assert = require('assert'),
 util = require('util'),
+fs = require('fs'),
 exec = require('child_process').exec,
 path = require('path'),
 JSLINT_VERSION = '2012-10-18',
+version = JSON.parse(fs.readFileSync(__dirname + '/../package.json')).version,
 help = [
 	'jsrevival [-j jslint_file] [ [ [-o jslint_options] [-p prefef] ] || [–c jslint_config_file] ] [-s] [–m] [–v] [-R] [–q]  [ [-r reporterName] || [-e] ] [–h] files directories ... ',
-	'jsrevival: a JSLint cli.',
+	'jsrevival ' + version + ': a JSLint cli.',
 	'Options:',
 	'  j: jslint file (overload default)',
 	'  o: jslint option (overload default). Ex: -o "unparam: true, vars: false..."',
@@ -69,17 +71,10 @@ jslintDefaultOption = [
     '' // This last line is required
 ].join('\n'),
 jslintJOption = [
-	/*'Reporter:  cli-no-color',
-	'Reading jslint config from command line',
-    'JSLint default options overload:',
-    '  properties: false',
-    'JSLINT edition: 2012-01-25',*/
     util.format('%s OK', path.relative(process.cwd(), __dirname +'/vows_jsrevival_bin.js')),
     '' // This last line is required
 ].join('\n'),
 jslintDirectoryR = [
-	/*'Reporter:  cli-no-color',
-    'JSLINT edition: 2012-01-25',*/
     util.format('%s OK', path.relative(process.cwd(),  __dirname + '/Rtest/test.js')),
     util.format('%s KO', path.relative(process.cwd(),  __dirname + '/Rtest/A/testA.js')),
     'testA.js> (error) line 1(6): Expected \';\' and instead saw \'(end)\'. "a = 1"',
@@ -91,24 +86,14 @@ jslintDirectoryR = [
     '' // This last line is required
 ],
 jslintDirectory = [
-	/*'Reporter:  cli-no-color',
-    'JSLINT edition: 2012-01-25',*/
     util.format('%s OK', path.relative(process.cwd(), __dirname +'/Rtest/test.js')),
     '' // This last line is required
 ].join('\n'),
 jslintOptionOverloadWarnings = [
-	/*'Reporter:  cli-no-color',
-	'Reading jslint config from command line',
-    'JSLint default options overload:',
-    '  properties: false',
-    'JSLINT edition: 2012-01-25',*/
     util.format('%s OK', path.relative(process.cwd(), __dirname +'/vows_jsrevival_bin.js')),
     '' // This last line is required
 ].join('\n'),
 jslintSOption = [
-	/*'Reporter:  cli-no-color',
-    'Stop on first file error enabled',
-    'JSLINT edition: 2012-01-25',*/
      util.format('%s OK', path.relative(process.cwd(), __dirname +'/Rtest/test.js')),
      
      // A
@@ -127,19 +112,10 @@ jslintSOption = [
     '' // This last line is required
 ],
 jslintPOption = [
-	/*'Reporter:  cli-no-color',
-	'Reading jslint config from command line',
-    'JSLint default options overload:',
-    '  undef: false',
-    '  predef: b,c',
-    'JSLINT edition: 2012-01-25',*/
     util.format('%s OK', path.relative(process.cwd(), __dirname +'/Rtest/test.js')),
     '' // This last line is required
 ].join('\n'),
 jslintHideValid = [
-	/*'Reporter:  cli-hide-valid-no-color',
-    'Stop on first file error enabled',
-    'JSLINT edition: 2012-01-25',*/
      // A
      util.format('%s KO', path.relative(process.cwd(), __dirname +'/Rtest/A/testA.js')),
     'testA.js> (error) line 1(6): Expected \';\' and instead saw \'(end)\'. "a = 1"',
@@ -156,9 +132,6 @@ jslintHideValid = [
     '' // This last line is required
 ],
 jslintSublimeText = [
-	/*'Reporter:  sublime-text',
-    'Stop on first file error enabled',
-    'JSLINT edition: 2012-01-25',*/
     'test.js# OK',
      // A
     'testA.js# l1:6>(error) Expected \';\' and instead saw \'(end)\'. "a = 1"',
@@ -175,6 +148,7 @@ jslintSublimeText = [
 ],
 jslintCOption = [
 	'Verbose mode enabled',
+	'jsrevival version: ' + version,
 	'Reporter:  cli-hide-valid-no-color',
 	'Reading jslint config from:  '+ path.relative(process.cwd(), __dirname + '/jslint_conf.json'), 
 	'JSLint default options overload:',
@@ -395,6 +369,7 @@ addBatch({
 			'Output is valid': function (error, stdout, stderr) {
 				assert.strictEqual(stdout, [
 						'Verbose mode enabled\n',
+						'jsrevival version: ' + version + '\n' ,
 						'Reading reporter from user environment:  cli-no-color\n',
 						'Reporter:  cli-no-color\n',
 						'JSLINT edition: '+ JSLINT_VERSION + '\n',
@@ -426,7 +401,13 @@ addBatch({
 		run_jsrevival('-v -r cli-hide-valid-no-color -e ' + __dirname + '/Rtest', this.callback);
 	},
 	'It use -r option': function (error, stdout, stderr) {
-		assert.strictEqual(stdout, 'Verbose mode enabled\nReporter:  cli-hide-valid-no-color\nJSLINT edition: '+ JSLINT_VERSION + '\n');
+		assert.strictEqual(stdout, [
+				'Verbose mode enabled',
+				'jsrevival version: ' + version,
+				'Reporter:  cli-hide-valid-no-color',
+				'JSLINT edition: '+ JSLINT_VERSION,
+				''
+			].join('\n'));
 		assert.strictEqual(stderr, '');
 	}
 }
