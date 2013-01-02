@@ -5,7 +5,7 @@ util = require('util'),
 fs = require('fs'),
 exec = require('child_process').exec,
 path = require('path'),
-JSLINT_VERSION = '2012-10-18',
+JSLINT_VERSION = '2012-12-31',
 version = JSON.parse(fs.readFileSync(__dirname + '/../package.json')).version,
 help = [
 	'jsrevival [-j jslint_file] [ [ [-o jslint_options] [-p prefef] ] || [–c jslint_config_file] ] [-s] [–m] [–v] [-R] [–q]  [ [-r reporterName] || [-e] ] [–h] files directories ... ',
@@ -36,7 +36,6 @@ jslintDefaultOption = [
 	'  anon: true # if the space may be omitted in anonymous function declarations',
 	'  bitwise: true # if bitwise operators should be allowed',
 	'  browser: true # if the standard browser globals should be predefined',
-	'  cap: true # if upper case HTML should be allowed',
 	'  continue: true # if the continuation statement should be tolerated',
 	'  css: true # if CSS workarounds should be tolerated',
 	'  debug: true # if debugger statements should be allowed',
@@ -156,7 +155,6 @@ jslintCOption = [
 	'  anon: true is already default value',
 	'  bitwise: true is already default value',
 	'  browser: true is already default value',
-	'  cap: true is already default value',
 	'  continue: true is already default value',
 	'  css: true is already default value',
 	'  debug: true is already default value',
@@ -207,7 +205,7 @@ function run_jsrevival(option, callback) {
 	var cmdLine= util.format('node %s %s',
 		path.relative(process.cwd(), __dirname + '/../bin/jsrevival.js'),
 		option);
-	//console.error(cmdLine);
+	console.error(cmdLine);
 	exec(cmdLine, callback);
 	return cmdLine;
 }

@@ -1,5 +1,5 @@
 // jslint.js
-// 2012-10-18
+// 2012-12-31
 
 // Copyright (c) 2002 Douglas Crockford  (www.JSLint.com)
 
@@ -172,7 +172,6 @@
 //     anon       true, if the space may be omitted in anonymous function declarations
 //     bitwise    true, if bitwise operators should be allowed
 //     browser    true, if the standard browser globals should be predefined
-//     cap        true, if upper case HTML should be allowed
 //     'continue' true, if the continuation statement should be tolerated
 //     css        true, if CSS workarounds should be tolerated
 //     debug      true, if debugger statements should be allowed
@@ -238,7 +237,7 @@
     'border-top', 'border-top-color', 'border-top-left-radius',
     'border-top-right-radius', 'border-top-style', 'border-top-width',
     'border-width', bottom, 'box-shadow', br, braille, browser, button, c, call,
-    canvas, cap, caption, 'caption-side', center, charAt, charCodeAt, character,
+    canvas, caption, 'caption-side', center, charAt, charCodeAt, character,
     cite, clear, clip, closure, cm, code, col, colgroup, color, combine_var,
     command, conditional_assignment, confusing_a, confusing_regexp,
     constructor_name_a, content, continue, control_a, 'counter-increment',
@@ -256,8 +255,8 @@
     expected_percent_a, expected_positive_a, expected_pseudo_a,
     expected_selector_a, expected_small_a, expected_space_a_b, expected_string_a,
     expected_style_attribute, expected_style_pattern, expected_tagname_a,
-    expected_type_a, f, fieldset, figure, filter, first, flag, float, floor,
-    font, 'font-family', 'font-size', 'font-size-adjust', 'font-stretch',
+    expected_type_a, f, fieldset, figcaption, figure, filter, first, flag, float,
+    floor, font, 'font-family', 'font-size', 'font-size-adjust', 'font-stretch',
     'font-style', 'font-variant', 'font-weight', footer, forEach, for_if, forin,
     form, fragment, frame, frameset, from, fromCharCode, fud, funct, function,
     function_block, function_eval, function_loop, function_statement,
@@ -273,7 +272,7 @@
     'margin-left', 'margin-right', 'margin-top', mark, 'marker-offset', match,
     'max-height', 'max-width', maxerr, maxlen, menu, message, meta, meter,
     'min-height', 'min-width', missing_a, missing_a_after_b, missing_option,
-    missing_property, missing_space_a_b, missing_url, missing_use_strict, mixed,
+    missing_property, missing_space_a_b, missing_url, missing_use_strict,
     mm, mode, move_invocation, move_var, n, name, name_function, nav,
     nested_comment, newcap, node, noframes, nomen, noscript, not,
     not_a_constructor, not_a_defined, not_a_function, not_a_label, not_a_scope,
@@ -290,8 +289,8 @@
     scanned_a_b, screen, script, search, second, section, select, shift,
     slash_equal, slice, sloppy, small, sort, source, span, speech, split, src,
     statement_block, stopping, strange_loop, strict, string, strong, stupid,
-    style, styleproperty, sub, subscript, substr, sup, supplant, sync_a, t,
-    table, 'table-layout', tag_a_in_b, tbody, td, test, 'text-align',
+    style, styleproperty, sub, subscript, substr, summary, sup, supplant,
+    sync_a, t,table, 'table-layout', tag_a_in_b, tbody, td, test, 'text-align',
     'text-decoration', 'text-indent', 'text-shadow', 'text-transform', textarea,
     tfoot, th, thead, third, thru, time, title, todo, todo_comment, toLowerCase,
     toString, toUpperCase, token, too_long, too_many, top, tr,
@@ -302,8 +301,8 @@
     unexpected_typeof_a, 'unicode-bidi', unnecessary_initialize,
     unnecessary_use, unparam, unreachable_a_b, unrecognized_style_attribute_a,
     unrecognized_tag_a, unsafe, unused, url, urls, use_array, use_braces,
-    use_charAt, use_object, use_or, use_param, used_before_a, var, var_a_not,
-    vars, 'vertical-align', video, visibility, was, weird_assignment,
+    use_charAt, use_object, use_or, use_param, use_spaces, used_before_a, var,
+    var_a_not, vars, 'vertical-align', video, visibility, was, weird_assignment,
     weird_condition, weird_new, weird_program, weird_relation, weird_ternary,
     white, 'white-space', width, windows, 'word-spacing', 'word-wrap', wrap,
     wrap_immediate, wrap_regexp, write_is_wrong, writeable, 'z-index'
@@ -341,7 +340,6 @@ var JSLINT = (function () {
             anon      : true,
             bitwise   : true,
             browser   : true,
-            cap       : true,
             'continue': true,
             css       : true,
             debug     : true,
@@ -544,7 +542,6 @@ var JSLINT = (function () {
             missing_space_a_b: "Missing space between '{a}' and '{b}'.",
             missing_url: "Missing url.",
             missing_use_strict: "Missing 'use strict' statement.",
-            mixed: "Mixed spaces and tabs.",
             move_invocation: "Move the invocation into the parens that " +
                 "contain the function.",
             move_var: "Move 'var' declarations to the top of the function.",
@@ -607,6 +604,7 @@ var JSLINT = (function () {
             use_object: "Use the object literal notation {}.",
             use_or: "Use the || operator.",
             use_param: "Use a named parameter.",
+            use_spaces: "Use spaces, not tabs.",
             used_before_a: "'{a}' was used before it was defined.",
             var_a_not: "Variable {a} was not declared correctly.",
             weird_assignment: "Weird assignment.",
@@ -765,6 +763,7 @@ var JSLINT = (function () {
             em:       {},
             embed:    {},
             fieldset: {},
+            figcaption: {parent: ' figure '},
             figure:   {},
             font:     {},
             footer:   {},
@@ -826,6 +825,7 @@ var JSLINT = (function () {
             strong:   {},
             style:    {parent: ' head ', empty: true},
             sub:      {},
+            summary:  {parent: ' details '},
             sup:      {},
             table:    {},
             tbody:    {parent: ' table '},
@@ -924,7 +924,7 @@ var JSLINT = (function () {
 // carriage return, carriage return linefeed, or linefeed
         crlfx = /\r\n?|\n/,
 // unsafe characters that are silently deleted by one or more browsers
-        cx = /[\u0000-\u001f\u007f-\u009f\u00ad\u0600-\u0604\u070f\u17b4\u17b5\u200c-\u200f\u2028-\u202f\u2060-\u206f\ufeff\ufff0-\uffff]/,
+        cx = /[\u0000-\u0008\u000a-\u001f\u007f-\u009f\u00ad\u0600-\u0604\u070f\u17b4\u17b5\u200c-\u200f\u2028-\u202f\u2060-\u206f\ufeff\ufff0-\uffff]/,
 // query characters for ids
         dx = /[\[\]\/\\"'*<>.&:(){}+=#]/,
 // html token
@@ -1196,11 +1196,14 @@ var JSLINT = (function () {
             character = 1;
             source_row = lines[line];
             line += 1;
-            at = source_row.search(/ \t/);
+            at = source_row.search(/\t/);
             if (at >= 0) {
-                warn_at('mixed', line, at + 1);
+                if (option.white) {
+                    source_row = source_row.replace(/\t/g, ' ');
+                } else {
+                    warn_at('use_spaces', line, at + 1);
+                }
             }
-            source_row = source_row.replace(/\t/g, tab);
             at = source_row.search(cx);
             if (at >= 0) {
                 warn_at('unsafe', line, at);
@@ -2858,12 +2861,12 @@ klass:              do {
     }
 
 
-    function optional_identifier() {
+    function optional_identifier(variable) {
         if (next_token.identifier) {
             advance();
             if (option.safe && banned[token.string]) {
                 warn('adsafe_a', token);
-            } else if (token.reserved && !option.es5) {
+            } else if (token.reserved && (!option.es5 || variable)) {
                 warn('expected_identifier_a_reserved', token);
             }
             return token.string;
@@ -2871,8 +2874,8 @@ klass:              do {
     }
 
 
-    function identifier() {
-        var i = optional_identifier();
+    function identifier(variable) {
+        var i = optional_identifier(variable);
         if (!i) {
             stop(token.id === 'function' && next_token.id === '('
                 ? 'name_function'
@@ -3672,6 +3675,8 @@ klass:              do {
             default:
                 warn('bad_wrap', that);
             }
+        } else if (!value.arity) {
+            warn('unexpected_a', that);
         }
         return value;
     });
@@ -3813,7 +3818,7 @@ klass:              do {
 
 
     function property_name() {
-        var id = optional_identifier(true);
+        var id = optional_identifier();
         if (!id) {
             if (next_token.id === '(string)') {
                 id = next_token.string;
@@ -4040,7 +4045,7 @@ klass:              do {
         step_in('var');
         for (;;) {
             name = next_token;
-            id = identifier();
+            id = identifier(true);
             add_label(name, 'becoming');
 
             if (next_token.id === '=') {
@@ -4088,7 +4093,7 @@ klass:              do {
         if (in_block) {
             warn('function_block', token);
         }
-        var name = next_token, id = identifier();
+        var name = next_token, id = identifier(true);
         add_label(name, 'unction');
         no_space();
         this.arity = 'statement';
@@ -4103,7 +4108,7 @@ klass:              do {
         if (!option.anon) {
             one_space();
         }
-        var id = optional_identifier();
+        var id = optional_identifier(true);
         if (id) {
             no_space();
         } else {
@@ -5428,9 +5433,8 @@ klass:              do {
 
     function style_selector() {
         if (next_token.identifier) {
-            if (!Object.prototype.hasOwnProperty.call(html_tag, option.cap
-                    ? next_token.string.toLowerCase()
-                    : next_token.string)) {
+            if (!Object.prototype.hasOwnProperty.call(html_tag,
+                    next_token.string)) {
                 warn('expected_tagname_a');
             }
             advance();
@@ -5700,18 +5704,9 @@ klass:              do {
         }
     }
 
-    function do_tag(name, attribute) {
-        var i, tag = html_tag[name], script, x;
+    function do_tag(tag, name, attribute) {
+        var i, script, x;
         src = false;
-        if (!tag) {
-            stop(
-                bundle.unrecognized_tag_a,
-                next_token,
-                name === name.toLowerCase()
-                    ? name
-                    : name + ' (capitalization error)'
-            );
-        }
         if (stack.length > 0) {
             if (name === 'html') {
                 stop('unexpected_a', token, name);
@@ -5721,7 +5716,7 @@ klass:              do {
                 if (x.indexOf(' ' + stack[stack.length - 1].name + ' ') < 0) {
                     stop('tag_a_in_b', token, name, x);
                 }
-            } else if (!option.adsafe && !option.fragment) {
+            } else if (x !== false && !option.adsafe && !option.fragment) {
                 i = stack.length;
                 do {
                     if (i <= 0) {
@@ -5858,7 +5853,7 @@ klass:              do {
 
     function html() {
         var attribute, attributes, is_empty, name, old_white = option.white,
-            quote, tag_name, tag, wmode;
+            quote, tag_name, tag, value, wmode;
         xmode = 'html';
         xquote = '';
         stack = null;
@@ -5871,9 +5866,6 @@ klass:              do {
                 tag_name = next_token;
                 name = tag_name.string;
                 advance_identifier(name);
-                if (option.cap) {
-                    name = name.toLowerCase();
-                }
                 tag_name.name = name;
                 if (!stack) {
                     stack = [];
@@ -5881,9 +5873,13 @@ klass:              do {
                 }
                 tag = html_tag[name];
                 if (typeof tag !== 'object') {
-                    stop('unrecognized_tag_a', tag_name, name);
+                    tag = {parent: false};
+                    warn('unrecognized_tag_a', tag_name, name === name.toLowerCase()
+                        ? name
+                        : name + ' (capitalization error)');
+                } else {
+                    is_empty = tag.empty;
                 }
-                is_empty = tag.empty;
                 tag_name.type = name;
                 for (;;) {
                     if (next_token.id === '/') {
@@ -5907,7 +5903,7 @@ klass:              do {
                     attribute = next_token.string;
                     option.white = old_white;
                     advance();
-                    if (!option.cap && attribute !== attribute.toLowerCase()) {
+                    if (attribute !== attribute.toLowerCase()) {
                         warn('attribute_case_a', token);
                     }
                     attribute = attribute.toLowerCase();
@@ -5938,7 +5934,7 @@ klass:              do {
                         xmode = 'html';
                         xquote = '';
                         advance(quote);
-                        tag = false;
+                        value = false;
                     } else if (attribute === 'style') {
                         xmode = 'scriptstring';
                         advance('=');
@@ -5953,11 +5949,11 @@ klass:              do {
                         xmode = 'html';
                         xquote = '';
                         advance(quote);
-                        tag = false;
+                        value = false;
                     } else {
                         if (next_token.id === '=') {
                             advance('=');
-                            tag = next_token.string;
+                            value = next_token.string;
                             if (!next_token.identifier &&
                                     next_token.id !== '"' &&
                                     next_token.id !== '\'' &&
@@ -5968,13 +5964,13 @@ klass:              do {
                             }
                             advance();
                         } else {
-                            tag = true;
+                            value = true;
                         }
                     }
-                    attributes[attribute] = tag;
-                    do_attribute(attribute, tag);
+                    attributes[attribute] = value;
+                    do_attribute(attribute, value);
                 }
-                do_tag(name, attributes);
+                do_tag(tag, name, attributes);
                 if (!is_empty) {
                     stack.push(tag_name);
                 }
@@ -5988,9 +5984,6 @@ klass:              do {
                     warn('bad_name_a');
                 }
                 name = next_token.string;
-                if (option.cap) {
-                    name = name.toLowerCase();
-                }
                 advance();
                 if (!stack) {
                     stop('unexpected_a', next_token, closetag(name));
@@ -6432,10 +6425,10 @@ klass:              do {
             key,
             keys = Object.keys(property).sort(),
             length,
-            output = ['/*properties'],
             mem = '    ',
             name,
-            not_first = false;
+            not_first = false,
+            output = ['/*properties'];
         for (i = 0; i < keys.length; i += 1) {
             key = keys[i];
             if (property[key] > 0) {
@@ -6460,7 +6453,7 @@ klass:              do {
 
     itself.jslint = itself;
 
-    itself.edition = '2012-10-18';
+    itself.edition = '2012-12-31';
 
     return itself;
 }());
