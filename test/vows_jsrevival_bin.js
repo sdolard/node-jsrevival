@@ -205,7 +205,7 @@ function run_jsrevival(option, callback) {
 	var cmdLine= util.format('node %s %s',
 		path.relative(process.cwd(), __dirname + '/../bin/jsrevival.js'),
 		option);
-	console.error(cmdLine);
+	//console.error(cmdLine);
 	exec(cmdLine, callback);
 	return cmdLine;
 }
