@@ -26,11 +26,12 @@
 	},
 	"dependencies": {
 		"posix-getopt": "0.0.x",
-		"vows": "0.6.x",
 		"colors": "0.6.x",
 		"jsonlint": "1.x.x",
 		"runnablepool": "0.0.x"
 	},
-	"devDependencies": {},
+	"devDependencies": {
+		"vows": "0.6.x"
+	},
 	"optionalDependencies": {}
 }
