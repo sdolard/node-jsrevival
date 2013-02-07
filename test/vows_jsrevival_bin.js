@@ -5,7 +5,7 @@ util = require('util'),
 fs = require('fs'),
 exec = require('child_process').exec,
 path = require('path'),
-JSLINT_VERSION = '2012-12-31',
+JSLINT_VERSION = '2013-02-05',
 version = JSON.parse(fs.readFileSync(__dirname + '/../package.json')).version,
 help = [
 	'jsrevival [-j jslint_file] [ [ [-o jslint_options] [-p prefef] ] || [–c jslint_config_file] ] [-s] [–m] [–v] [-R] [–q]  [ [-r reporterName] || [-e] ] [–h] files directories ... ',

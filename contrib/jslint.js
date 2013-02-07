@@ -1,5 +1,5 @@
 // jslint.js
-// 2012-12-31
+// 2013-02-05
 
 // Copyright (c) 2002 Douglas Crockford  (www.JSLint.com)
 
@@ -2710,6 +2710,8 @@ klass:              do {
         case '(regexp)':
         case '(string)':
         case '{':
+        case '?':
+        case '~':
             warn(message || bundle.weird_condition, node);
             break;
         case '(':
@@ -2769,6 +2771,15 @@ klass:              do {
                 } else if (right.string === 'undefined' ||
                         right.string === 'null') {
                     warn("unexpected_typeof_a", left, right.string);
+                }
+            } else if (right.id === 'typeof') {
+                if (left.id !== '(string)') {
+                    warn("expected_string_a", left, left.id === '(number)'
+                        ? left.number
+                        : left.string);
+                } else if (left.string === 'undefined' ||
+                        left.string === 'null') {
+                    warn("unexpected_typeof_a", right, left.string);
                 }
             }
             that.first = left;
@@ -4255,6 +4266,7 @@ klass:              do {
         var cases = [],
             old_in_block = in_block,
             particular,
+            that = token,
             the_case = next_token,
             unbroken = true;
 
@@ -4278,6 +4290,9 @@ klass:              do {
         step_in();
         in_block = true;
         this.second = [];
+        if (that.from !== next_token.from) {
+            warn('expected_a_at_b_c', next_token, next_token.string, that.from, next_token.from);
+        }
         while (next_token.id === 'case') {
             the_case = next_token;
             cases.forEach(find_duplicate_case);
@@ -5811,15 +5826,28 @@ klass:              do {
             switch (attribute.type) {
             case 'button':
             case 'checkbox':
+            case 'color':
+            case 'date':
+            case 'datetime':
+            case 'datetime-local':
+            case 'month':
+            case 'number':
             case 'radio':
+            case 'range':
             case 'reset':
             case 'submit':
+            case 'time':
+            case 'week':
                 break;
+            case 'email':
             case 'file':
             case 'hidden':
             case 'image':
             case 'password':
+            case 'search':
+            case 'tel':
             case 'text':
+            case 'url':
                 if (option.adsafe && attribute.autocomplete !== 'off') {
                     warn('adsafe_autocomplete');
                 }
@@ -6453,7 +6481,7 @@ klass:              do {
 
     itself.jslint = itself;
 
-    itself.edition = '2012-12-31';
+    itself.edition = '2013-02-05';
 
     return itself;
 }());
