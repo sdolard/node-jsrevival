@@ -4,7 +4,7 @@ util = require('util'),
 fs = require('fs'),
 exec = require('child_process').exec,
 path = require('path'),
-JSLINT_VERSION = '2013-02-05',
+JSLINT_VERSION = '2013-03-13',
 version = JSON.parse(fs.readFileSync(__dirname + '/../package.json')).version;
 
 

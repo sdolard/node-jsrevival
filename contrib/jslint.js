@@ -1,5 +1,5 @@
 // jslint.js
-// 2013-02-05
+// 2013-03-13
 
 // Copyright (c) 2002 Douglas Crockford  (www.JSLint.com)
 
@@ -140,6 +140,11 @@
 
 //     var myErrorReport = JSLINT.error_report(data);
 
+// You can obtain an object containing all of the properties found in the
+// file. JSLINT.property contains an object containing a key for each
+// property used in the program, the value being the number of times that
+// property name was used in the file.
+
 // You can request a properties report, which produces a list of the program's
 // properties in the form of a /*properties*/ declaration.
 
@@ -154,8 +159,24 @@
 //         'second', 'third', 'block', 'else'
 //     ], 4));
 
-// JSLint provides three directives. They look like slashstar comments, and
-// allow for setting options, declaring global variables, and establishing a
+// You can request a context coloring table. It contains information that can be
+// applied to the file that was analyzed. Context coloring colors functions
+// based on their nesting level, and variables on the color of the functions
+// in which they are defined.
+
+//      var myColorization = JSLINT.color(data);
+
+// It returns an array containing objects of this form:
+
+//      {
+//          from: COLUMN,
+//          thru: COLUMN,
+//          line: ROW,
+//          level: 0 or higher
+//      }
+
+// JSLint provides three inline directives. They look like slashstar comments,
+// and allow for setting options, declaring global variables, and establishing a
 // set of allowed property names.
 
 // These directives respect function scope.
@@ -164,7 +185,7 @@
 // For example:
 
 /*jslint
-    evil: true, nomen: true, regexp: true, todo: true
+    es5: true, evil: true, nomen: true, regexp: true, todo: true
 */
 
 // The current option set is
@@ -210,70 +231,71 @@
 // For example:
 
 /*properties
-    '\b', '\t', '\n', '\f', '\r', '!', '!=', '!==', '"', '%', '\'',
+    '', '\b', '\t', '\n', '\f', '\r', '!', '!=', '!==', '"', '%', '\'',
     '(arguments)', '(begin)', '(breakage)', '(context)', '(error)',
-    '(identifier)', '(line)', '(loopage)', '(name)', '(params)', '(scope)',
-    '(token)', '(vars)', '(verb)', '*', '+', '-', '/', '<', '<=', '==', '===',
-    '>', '>=', ADSAFE, Array, Date, Function, Object, '\\', a, a_label,
-    a_not_allowed, a_not_defined, a_scope, abbr, acronym, address, adsafe,
-    adsafe_a, adsafe_autocomplete, adsafe_bad_id, adsafe_div, adsafe_fragment,
-    adsafe_go, adsafe_html, adsafe_id, adsafe_id_go, adsafe_lib,
-    adsafe_lib_second, adsafe_missing_id, adsafe_name_a, adsafe_placement,
-    adsafe_prefix_a, adsafe_script, adsafe_source, adsafe_subscript_a,
-    adsafe_tag, all, already_defined, and, anon, applet, apply, approved, area,
-    arity, article, aside, assign, assign_exception,
+    '(identifier)', '(level)', '(line)', '(loopage)', '(name)', '(params)',
+    '(scope)', '(token)', '(vars)', '(verb)', '*', '+', '-', '/', '<', '<=',
+    '==', '===', '>', '>=', ADSAFE, Array, Date, Function, Object, '\\', a,
+    a_label, a_not_allowed, a_not_defined, a_scope, abbr, acronym, address,
+    adsafe, adsafe_a, adsafe_autocomplete, adsafe_bad_id, adsafe_div,
+    adsafe_fragment, adsafe_go, adsafe_html, adsafe_id, adsafe_id_go,
+    adsafe_lib, adsafe_lib_second, adsafe_missing_id, adsafe_name_a,
+    adsafe_placement, adsafe_prefix_a, adsafe_script, adsafe_source,
+    adsafe_subscript_a, adsafe_tag, all, already_defined, and, anon, applet,
+    apply, approved, area, arity, article, aside, assign, assign_exception,
     assignment_function_expression, at, attribute_case_a, audio, autocomplete,
     avoid_a, b, background, 'background-attachment', 'background-color',
     'background-image', 'background-position', 'background-repeat',
-    bad_assignment, bad_color_a, bad_constructor, bad_entity, bad_html, bad_id_a,
-    bad_in_a, bad_invocation, bad_name_a, bad_new, bad_number, bad_operand,
-    bad_style, bad_type, bad_url_a, bad_wrap, base, bdo, big, bitwise, block,
-    blockquote, body, border, 'border-bottom', 'border-bottom-color',
-    'border-bottom-left-radius', 'border-bottom-right-radius',
-    'border-bottom-style', 'border-bottom-width', 'border-collapse',
-    'border-color', 'border-left', 'border-left-color', 'border-left-style',
-    'border-left-width', 'border-radius', 'border-right', 'border-right-color',
-    'border-right-style', 'border-right-width', 'border-spacing', 'border-style',
-    'border-top', 'border-top-color', 'border-top-left-radius',
-    'border-top-right-radius', 'border-top-style', 'border-top-width',
-    'border-width', bottom, 'box-shadow', br, braille, browser, button, c, call,
-    canvas, caption, 'caption-side', center, charAt, charCodeAt, character,
-    cite, clear, clip, closure, cm, code, col, colgroup, color, combine_var,
-    command, conditional_assignment, confusing_a, confusing_regexp,
-    constructor_name_a, content, continue, control_a, 'counter-increment',
-    'counter-reset', create, css, cursor, d, dangerous_comment, dangling_a, data,
-    datalist, dd, debug, del, deleted, details, devel, dfn, dialog, dir,
-    direction, display, disrupt, div, dl, dt, duplicate_a, edge, edition, else,
-    em, embed, embossed, empty, 'empty-cells', empty_block, empty_case,
-    empty_class, entityify, eqeq, error_report, errors, es5, eval, evidence,
-    evil, ex, exception, exec, expected_a, expected_a_at_b_c, expected_a_b,
-    expected_a_b_from_c_d, expected_at_a, expected_attribute_a,
-    expected_attribute_value_a, expected_class_a, expected_fraction_a,
-    expected_id_a, expected_identifier_a, expected_identifier_a_reserved,
-    expected_lang_a, expected_linear_a, expected_media_a, expected_name_a,
-    expected_nonstandard_style_attribute, expected_number_a, expected_operator_a,
-    expected_percent_a, expected_positive_a, expected_pseudo_a,
-    expected_selector_a, expected_small_a, expected_space_a_b, expected_string_a,
+    bad_assignment, bad_color_a, bad_constructor, bad_entity, bad_html,
+    bad_id_a, bad_in_a, bad_invocation, bad_name_a, bad_new, bad_number,
+    bad_operand, bad_style, bad_type, bad_url_a, bad_wrap, base, bdo, big,
+    bitwise, block, blockquote, body, border, 'border-bottom',
+    'border-bottom-color', 'border-bottom-left-radius',
+    'border-bottom-right-radius', 'border-bottom-style', 'border-bottom-width',
+    'border-collapse', 'border-color', 'border-left', 'border-left-color',
+    'border-left-style', 'border-left-width', 'border-radius', 'border-right',
+    'border-right-color', 'border-right-style', 'border-right-width',
+    'border-spacing', 'border-style', 'border-top', 'border-top-color',
+    'border-top-left-radius', 'border-top-right-radius', 'border-top-style',
+    'border-top-width', 'border-width', bottom, 'box-shadow', br, braille,
+    browser, button, c, call, canvas, caption, 'caption-side', center, charAt,
+    charCodeAt, character, cite, clear, clip, closure, cm, code, col, colgroup,
+    color, combine_var, command, conditional_assignment, confusing_a,
+    confusing_regexp, constructor_name_a, content, continue, control_a,
+    'counter-increment', 'counter-reset', create, css, cursor, d,
+    dangerous_comment, dangling_a, data, datalist, dd, debug, del, deleted,
+    details, devel, dfn, dialog, dir, direction, display, disrupt, div, dl, dt,
+    duplicate_a, edge, edition, else, em, embed, embossed, empty, 'empty-cells',
+    empty_block, empty_case, empty_class, entityify, eqeq, error_report, errors,
+    es5, eval, evidence, evil, ex, exception, exec, expected_a,
+    expected_a_at_b_c, expected_a_b, expected_a_b_from_c_d, expected_at_a,
+    expected_attribute_a, expected_attribute_value_a, expected_class_a,
+    expected_fraction_a, expected_id_a, expected_identifier_a,
+    expected_identifier_a_reserved, expected_lang_a, expected_linear_a,
+    expected_media_a, expected_name_a, expected_nonstandard_style_attribute,
+    expected_number_a, expected_operator_a, expected_percent_a,
+    expected_positive_a, expected_pseudo_a, expected_selector_a,
+    expected_small_a, expected_space_a_b, expected_string_a,
     expected_style_attribute, expected_style_pattern, expected_tagname_a,
-    expected_type_a, f, fieldset, figcaption, figure, filter, first, flag, float,
-    floor, font, 'font-family', 'font-size', 'font-size-adjust', 'font-stretch',
-    'font-style', 'font-variant', 'font-weight', footer, forEach, for_if, forin,
-    form, fragment, frame, frameset, from, fromCharCode, fud, funct, function,
-    function_block, function_eval, function_loop, function_statement,
-    function_strict, functions, global, globals, h1, h2, h3, h4, h5, h6,
-    handheld, hasOwnProperty, head, header, height, hgroup, hr,
+    expected_type_a, f, fieldset, figcaption, figure, filter, first, flag,
+    float, floor, font, 'font-family', 'font-size', 'font-size-adjust',
+    'font-stretch', 'font-style', 'font-variant', 'font-weight', footer,
+    forEach, for_if, forin, form, fragment, frame, frameset, from, fromCharCode,
+    fud, function, function_block, function_eval, function_loop,
+    function_statement, function_strict, functions, global, globals, h1, h2, h3,
+    h4, h5, h6, handheld, hasOwnProperty, head, header, height, hgroup, hr,
     'hta:application', html, html_confusion_a, html_handlers, i, id, identifier,
     identifier_function, iframe, img, immed, implied_evil, in, indent, indexOf,
     infix_in, init, input, ins, insecure_a, isAlpha, isArray, isDigit, isNaN,
     join, jslint, json, kbd, keygen, keys, label, labeled, lang, lbp,
-    leading_decimal_a, led, left, legend, length, 'letter-spacing', li, lib,
-    line, 'line-height', link, 'list-style', 'list-style-image',
+    leading_decimal_a, led, left, legend, length, 'letter-spacing', level, li,
+    lib, line, 'line-height', link, 'list-style', 'list-style-image',
     'list-style-position', 'list-style-type', map, margin, 'margin-bottom',
     'margin-left', 'margin-right', 'margin-top', mark, 'marker-offset', match,
     'max-height', 'max-width', maxerr, maxlen, menu, message, meta, meter,
     'min-height', 'min-width', missing_a, missing_a_after_b, missing_option,
-    missing_property, missing_space_a_b, missing_url, missing_use_strict,
-    mm, mode, move_invocation, move_var, n, name, name_function, nav,
+    missing_property, missing_space_a_b, missing_url, missing_use_strict, mm,
+    mode, move_invocation, move_var, n, name, name_function, nav,
     nested_comment, newcap, node, noframes, nomen, noscript, not,
     not_a_constructor, not_a_defined, not_a_function, not_a_label, not_a_scope,
     not_greater, nud, number, object, octal_a, ol, on, opacity, open, optgroup,
@@ -290,22 +312,23 @@
     slash_equal, slice, sloppy, small, sort, source, span, speech, split, src,
     statement_block, stopping, strange_loop, strict, string, strong, stupid,
     style, styleproperty, sub, subscript, substr, summary, sup, supplant,
-    sync_a, t,table, 'table-layout', tag_a_in_b, tbody, td, test, 'text-align',
+    sync_a, t, table, 'table-layout', tag_a_in_b, tbody, td, test, 'text-align',
     'text-decoration', 'text-indent', 'text-shadow', 'text-transform', textarea,
-    tfoot, th, thead, third, thru, time, title, todo, todo_comment, toLowerCase,
-    toString, toUpperCase, token, too_long, too_many, top, tr,
+    tfoot, th, thead, third, thru, time, title, toLowerCase, toString,
+    toUpperCase, todo, todo_comment, token, tokens, too_long, too_many, top, tr,
     trailing_decimal_a, tree, tt, tty, tv, type, u, ul, unclosed,
     unclosed_comment, unclosed_regexp, undef, undefined, unescaped_a,
-    unexpected_a, unexpected_char_a_b, unexpected_comment, unexpected_else,
-    unexpected_label_a, unexpected_property_a, unexpected_space_a_b,
-    unexpected_typeof_a, 'unicode-bidi', unnecessary_initialize,
-    unnecessary_use, unparam, unreachable_a_b, unrecognized_style_attribute_a,
-    unrecognized_tag_a, unsafe, unused, url, urls, use_array, use_braces,
-    use_charAt, use_object, use_or, use_param, use_spaces, used_before_a, var,
-    var_a_not, vars, 'vertical-align', video, visibility, was, weird_assignment,
-    weird_condition, weird_new, weird_program, weird_relation, weird_ternary,
-    white, 'white-space', width, windows, 'word-spacing', 'word-wrap', wrap,
-    wrap_immediate, wrap_regexp, write_is_wrong, writeable, 'z-index'
+    unexpected_a, unexpected_char_a, unexpected_char_a_b, unexpected_comment,
+    unexpected_else, unexpected_label_a, unexpected_property_a,
+    unexpected_space_a_b, unexpected_typeof_a, 'unicode-bidi',
+    unnecessary_initialize, unnecessary_use, unparam, unreachable_a_b,
+    unrecognized_style_attribute_a, unrecognized_tag_a, unsafe, unused, url,
+    urls, use_array, use_braces, use_charAt, use_object, use_or, use_param,
+    use_spaces, used_before_a, var, var_a_not, vars, 'vertical-align', video,
+    visibility, was, weird_assignment, weird_condition, weird_new,
+    weird_program, weird_relation, weird_ternary, white, 'white-space', width,
+    windows, 'word-spacing', 'word-wrap', wrap, wrap_immediate, wrap_regexp,
+    write_is_wrong, writeable, 'z-index'
 */
 
 // The global directive is used to declare global variables that can
@@ -582,6 +605,7 @@ var JSLINT = (function () {
             unclosed_regexp: "Unclosed regular expression.",
             unescaped_a: "Unescaped '{a}'.",
             unexpected_a: "Unexpected '{a}'.",
+            unexpected_char_a: "Unexpected character '{a}'.",
             unexpected_char_a_b: "Unexpected character '{a}' in {b}.",
             unexpected_comment: "Unexpected comment.",
             unexpected_else: "Unexpected 'else' after 'return'.",
@@ -895,6 +919,7 @@ var JSLINT = (function () {
         syntax = {},
         tab,
         token,
+        tokens,
         urls,
         var_mode,
         warnings,
@@ -944,7 +969,6 @@ var JSLINT = (function () {
 // style
         ssx = /^\s*([@#!"'};:\-%.=,+\[\]()*_]|[a-zA-Z][a-zA-Z0-9._\-]*|\/\*?|\d+(?:\.\d+)?|<\/)/,
         sx = /^\s*([{}:#%.=,>+\[\]@()"';]|[*$\^~]=|[a-zA-Z_][a-zA-Z0-9_\-]*|[0-9]+|<\/|\/\*)/,
-
 // sync
         syx = /Sync$/,
 // comment todo
@@ -955,6 +979,7 @@ var JSLINT = (function () {
         ux = /&|\+|\u00AD|\.\.|\/\*|%[^;]|base64|url|expression|data|mailto|script/i,
 
         rx = {
+            '': tx,
             outer: hx,
             html: hx,
             style: sx,
@@ -1190,12 +1215,12 @@ var JSLINT = (function () {
 
         function next_line() {
             var at;
-            if (line >= lines.length) {
-                return false;
-            }
             character = 1;
             source_row = lines[line];
             line += 1;
+            if (source_row === undefined) {
+                return false;
+            }
             at = source_row.search(/\t/);
             if (at >= 0) {
                 if (option.white) {
@@ -1266,6 +1291,22 @@ var JSLINT = (function () {
                 character += length;
                 return first;
             }
+            for (;;) {
+                if (!source_row) {
+                    if (!option.white) {
+                        warn_at('unexpected_char_a', line, character - 1, '(space)');
+                    }
+                    return;
+                }
+                c = source_row.charAt(0);
+                if (c !== ' ') {
+                    break;
+                }
+                source_row = source_row.slice(1);
+                character += 1;
+            }
+            stop_at('unexpected_char_a', line, character, c);
+
         }
 
         function string(x) {
@@ -1747,22 +1788,8 @@ klass:              do {
                             }
                         }
                     }
-                    snippet = match(rx[xmode] || tx);
-                    if (!snippet) {
-                        if (source_row) {
-                            if (source_row.charAt(0) === ' ') {
-                                if (!option.white) {
-                                    warn_at('unexpected_a', line, character,
-                                        '(space)');
-                                }
-                                character += 1;
-                                source_row = '';
-                            } else {
-                                stop_at('unexpected_a', line, character,
-                                    source_row.charAt(0));
-                            }
-                        }
-                    } else {
+                    snippet = match(rx[xmode]);
+                    if (snippet) {
 
 //      identifier
 
@@ -1925,7 +1952,6 @@ klass:              do {
                 token.writeable = typeof predefined[name] === 'boolean'
                     ? predefined[name]
                     : true;
-                token.funct = funct;
                 global_scope[name] = token;
             }
             if (kind === 'becoming') {
@@ -1951,11 +1977,11 @@ klass:              do {
 
 // Add the symbol to the current function.
 
-                token.funct = funct;
                 token.writeable = true;
                 scope[name] = token;
             }
         }
+        token.function = funct;
         funct[name] = kind;
     }
 
@@ -2079,6 +2105,8 @@ klass:              do {
         prev_token = token;
         token = next_token;
         next_token = lookahead.shift() || lex.token();
+        next_token.function = funct;
+        tokens.push(next_token);
     }
 
 
@@ -2097,7 +2125,7 @@ klass:              do {
         }
         if (option.safe) {
             option.browser     =
-                option['continue'] =
+                option.continue =
                 option.css     =
                 option.debug   =
                 option.devel   =
@@ -2111,13 +2139,11 @@ klass:              do {
                 option.sub     =
                 option.undef   =
                 option.windows = false;
-
-
             delete predefined.Array;
             delete predefined.Date;
             delete predefined.Function;
             delete predefined.Object;
-            delete predefined['eval'];
+            delete predefined.eval;
 
             add_to_predefined({
                 ADSAFE: false,
@@ -2817,7 +2843,7 @@ klass:              do {
                     l = l.first;
                 } while (l);
             }
-            if (left === syntax['function']) {
+            if (left === syntax.function) {
                 warn('identifier_function', token);
             }
             if (left.id === '.' || left.id === '[') {
@@ -2948,7 +2974,7 @@ klass:              do {
 // If this is an expression statement, determine if it is acceptable.
 // We do not like
 //      new Blah;
-// statments. If it is to be used at all, new should only be used to make
+// statements. If it is to be used at all, new should only be used to make
 // objects, not side effects. The expression statements we do like do
 // assignment or invocation or delete.
 
@@ -3081,9 +3107,9 @@ klass:              do {
                 writeable = predefined[name];
                 if (typeof writeable === 'boolean') {
                     global_scope[name] = variable = {
-                        string:    name,
+                        string: name,
                         writeable: writeable,
-                        funct:     global_funct
+                        function: global_funct
                     };
                     global_funct[name] = 'var';
 
@@ -3097,13 +3123,13 @@ klass:              do {
                     scope[name] = variable = {
                         string: name,
                         writeable: true,
-                        funct: funct
+                        function: funct
                     };
                     funct[name] = 'undef';
                 }
 
             }
-            site = variable.funct;
+            site = variable.function;
 
 // The name is in scope and defined in the current function.
 
@@ -3129,6 +3155,7 @@ klass:              do {
                     warn('a_label', token, name);
                     break;
                 }
+                this.function = funct;
 
 // If the name is already defined in the current
 // function, but not as outer, then there is a scope error.
@@ -3158,16 +3185,14 @@ klass:              do {
                     case 'function':
                     case 'parameter':
                     case 'unction':
+                    case 'unparam':
                     case 'unused':
                     case 'var':
                         site[name] = 'closure';
                         funct[name] = site === global_funct
                             ? 'global'
                             : 'outer';
-                        break;
-                    case 'unparam':
-                        site[name] = 'parameter';
-                        funct[name] = 'outer';
+                        this.function = site;
                         break;
                     case 'undef':
                         funct[name] = 'undef';
@@ -3851,9 +3876,26 @@ klass:              do {
     }
 
 
+
+    assignop('=');
+    assignop('+=', '+');
+    assignop('-=', '-');
+    assignop('*=', '*');
+    assignop('/=', '/').nud = function () {
+        stop('slash_equal');
+    };
+    assignop('%=', '%');
+    assignop('&=', '&');
+    assignop('|=', '|');
+    assignop('^=', '^');
+    assignop('<<=', '<<');
+    assignop('>>=', '>>');
+    assignop('>>>=', '>>>');
+
     function function_params() {
         var id, paren = next_token, params = [];
         advance('(');
+        token.function = funct;
         step_in();
         no_space();
         if (next_token.id === ')') {
@@ -3876,8 +3918,6 @@ klass:              do {
         }
     }
 
-
-
     function do_function(func, name) {
         var old_funct      = funct,
             old_option     = option,
@@ -3889,12 +3929,15 @@ klass:              do {
             '(breakage)' : 0,
             '(loopage)'  : 0,
             '(scope)'    : scope,
-            '(token)'    : func
+            '(token)'    : func,
+            '(level)'    : old_funct['(level)'] + 1
         };
+        func.function = funct;
         option = Object.create(old_option);
         scope = Object.create(old_scope);
         functions.push(funct);
         func.name = name;
+        func.function = funct;
         if (name) {
             add_label(func, 'function', name);
         }
@@ -3913,23 +3956,6 @@ klass:              do {
         option     = old_option;
         scope      = old_scope;
     }
-
-
-    assignop('=');
-    assignop('+=', '+');
-    assignop('-=', '-');
-    assignop('*=', '*');
-    assignop('/=', '/').nud = function () {
-        stop('slash_equal');
-    };
-    assignop('%=', '%');
-    assignop('&=', '&');
-    assignop('|=', '|');
-    assignop('^=', '^');
-    assignop('<<=', '<<');
-    assignop('>>=', '>>');
-    assignop('>>>=', '>>>');
-
 
     prefix('{', function (that) {
         var get, i, j, name, p, set, seen = {};
@@ -4104,7 +4130,8 @@ klass:              do {
         if (in_block) {
             warn('function_block', token);
         }
-        var name = next_token, id = identifier(true);
+        var name = next_token,
+            id = identifier(true);
         add_label(name, 'unction');
         no_space();
         this.arity = 'statement';
@@ -4167,10 +4194,10 @@ klass:              do {
             one_space();
             advance('else');
             one_space();
-            this['else'] = next_token.id === 'if' || next_token.id === 'switch'
+            this.else = next_token.id === 'if' || next_token.id === 'switch'
                 ? statement(true)
                 : block(true);
-            if (this['else'].disrupt && this.block.disrupt) {
+            if (this.else.disrupt && this.block.disrupt) {
                 this.disrupt = true;
             }
         }
@@ -4290,7 +4317,7 @@ klass:              do {
         step_in();
         in_block = true;
         this.second = [];
-        if (that.from !== next_token.from) {
+        if (that.from !== next_token.from && !option.white) {
             warn('expected_a_at_b_c', next_token, next_token.string, that.from, next_token.from);
         }
         while (next_token.id === 'case') {
@@ -4440,7 +4467,7 @@ klass:              do {
                 blok = block(true);
                 if (!option.forin) {
                     if (blok.length === 1 && typeof blok[0] === 'object' &&
-                            blok[0].string === 'if' && !blok[0]['else']) {
+                            blok[0].string === 'if' && !blok[0].else) {
                         filter = blok[0].first;
                         while (filter.id === '&&') {
                             filter = filter.first;
@@ -4537,7 +4564,7 @@ klass:              do {
             one_space_only();
             if (funct[label] !== 'label') {
                 warn('not_a_label', next_token);
-            } else if (scope[label].funct !== funct) {
+            } else if (scope[label].function !== funct) {
                 warn('not_a_scope', next_token);
             }
             this.first = next_token;
@@ -4547,7 +4574,7 @@ klass:              do {
     });
 
     disrupt_stmt('continue', function () {
-        if (!option['continue']) {
+        if (!option.continue) {
             warn('unexpected_a', this);
         }
         var label = next_token.string;
@@ -4559,7 +4586,7 @@ klass:              do {
             one_space_only();
             if (funct[label] !== 'label') {
                 warn('not_a_label', next_token);
-            } else if (scope[label].funct !== funct) {
+            } else if (scope[label].function !== funct) {
                 warn('not_a_scope', next_token);
             }
             this.first = next_token;
@@ -6087,6 +6114,7 @@ klass:              do {
         JSLINT.properties = '';
         begin = prev_token = token = next_token =
             Object.create(syntax['(begin)']);
+        tokens = [];
         predefined = {};
         add_to_predefined(standard);
         property = {};
@@ -6126,7 +6154,8 @@ klass:              do {
         global_funct = funct = {
             '(scope)': scope,
             '(breakage)': 0,
-            '(loopage)': 0
+            '(loopage)': 0,
+            '(level)': 0
         };
         functions = [funct];
 
@@ -6308,6 +6337,7 @@ klass:              do {
             function_data.name = the_function['(name)'];
             function_data.params = the_function['(params)'];
             function_data.line = the_function['(line)'];
+            function_data.level = the_function['(level)'];
             data.functions.push(function_data);
         }
 
@@ -6315,8 +6345,9 @@ klass:              do {
             data.unused = unused;
         }
         if (undef.length > 0) {
-            data['undefined'] = undef;
+            data.undefined = undef;
         }
+        data.tokens = tokens;
         return data;
     };
 
@@ -6344,16 +6375,16 @@ klass:              do {
                 }
             }
         }
-        if (data.unused || data['undefined']) {
+        if (data.unused || data.undefined) {
             output.push('<dl>');
-            if (data['undefined']) {
+            if (data.undefined) {
                 output.push('<dt>undefined</dt><dd>');
                 snippets = [];
-                for (i = 0; i < data['undefined'].length; i += 1) {
-                    snippets[i] = '<code>' + data['undefined'][i].name +
+                for (i = 0; i < data.undefined.length; i += 1) {
+                    snippets[i] = '<code>' + data.undefined[i].name +
                         '</code>&nbsp;<address>' +
-                        data['undefined'][i]['function']  + ' ' +
-                        String(data['undefined'][i].line) + '</address>';
+                        data.undefined[i]['function']  + ' ' +
+                        String(data.undefined[i].line) + '</address>';
                 }
                 output.push(snippets.join(', '));
                 output.push('</dd>');
@@ -6363,7 +6394,7 @@ klass:              do {
                 snippets = [];
                 for (i = 0; i < data.unused.length; i += 1) {
                     snippets[i] = '<code>' + data.unused[i].name + '</code>&nbsp;<address>' +
-                        data.unused[i]['function']  + ' ' +
+                        data.unused[i].function  + ' ' +
                         String(data.unused[i].line) + '</address>';
                 }
                 output.push(snippets.join(', '));
@@ -6395,7 +6426,7 @@ klass:              do {
             }
         }
 
-        output.push('<dl>');
+        output.push('<dl class=level0>');
         if (data.urls) {
             detail('url', data.urls);
             dl = true;
@@ -6427,14 +6458,14 @@ klass:              do {
                         names[j] = the_function.params[j].string;
                     }
                 }
-                output.push('<dl><address>line ' +
-                    String(the_function.line) + '</address>' +
-                    the_function.name.entityify() +
-                    '(' + names.join(', ') + ')');
-                detail('undefined', the_function['undefined']);
+                output.push('<dl class=level' + the_function.level +
+                    '><address>line ' + String(the_function.line) +
+                    '</address>' + the_function.name.entityify() + '(' +
+                    names.join(', ') + ')');
+                detail('undefined', the_function.undefined);
                 detail('unused', the_function.unused);
                 detail('closure', the_function.closure);
-                detail('variable', the_function['var']);
+                detail('variable', the_function.var);
                 detail('exception', the_function.exception);
                 detail('outer', the_function.outer);
                 detail('global', the_function.global);
@@ -6467,7 +6498,7 @@ klass:              do {
                     ? key
                     : '\'' + key.replace(nx, sanitize) + '\'';
                 length += name.length + 2;
-                if (mem.length + name.length > 80) {
+                if (mem.length + name.length >= 80) {
                     output.push(mem);
                     mem = '    ';
                 }
@@ -6479,9 +6510,38 @@ klass:              do {
         return output.join('\n');
     };
 
+    itself.color = function (data) {
+        var from,
+            i = 1,
+            level,
+            line,
+            result = [],
+            thru,
+            token = data.tokens[0];
+        while (token && token.id !== '(end)') {
+            from = token.from;
+            line = token.line;
+            thru = token.thru;
+            level = token.function['(level)'];
+            do {
+                thru = token.thru;
+                token = data.tokens[i];
+                i += 1;
+            } while (token && token.line === line && token.from - thru < 5 &&
+                    level === token.function['(level)']);
+            result.push({
+                line: line,
+                level: level,
+                from: from,
+                thru: thru
+            });
+        }
+        return result;
+    };
+
     itself.jslint = itself;
 
-    itself.edition = '2013-02-05';
+    itself.edition = '2013-03-13';
 
     return itself;
 }());
