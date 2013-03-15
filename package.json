@@ -15,11 +15,11 @@
 		"url": "git://github.com/sdolard/node-jsrevival.git"
 	},
 	"scripts": {
-		"test": "vows test/vows* --spec",
-		"posttest": "bin/jsrevival.js -o \"properties: false, maxlen: 0, debug: false, vars: false, passfail: false\" -R lib/"
+		"test": "mocha -R spec",
+		"posttest": "bin/jsrevival -r cli-hide-valid  -o \"properties: false, maxlen: 0, debug: false, vars: false, passfail: false\" -R lib/"
 	},
 	"bin": {
-		"jsrevival": "./bin/jsrevival.js"
+		"jsrevival": "./bin/jsrevival"
 	},
 	"engines": {
 		"node": ">= 0.8.0"
@@ -31,7 +31,8 @@
 		"runnablepool": "0.0.x"
 	},
 	"devDependencies": {
-		"vows": "0.6.x"
+		"vows": "0.6.x",
+		"mocha": "1.8.x"
 	},
 	"optionalDependencies": {}
 }
