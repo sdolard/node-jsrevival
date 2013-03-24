@@ -11,11 +11,24 @@ version = JSON.parse(fs.readFileSync(__dirname + '/../package.json')).version;
 function run_jsrevival(option, callback) {
 	//console.log('option: %s', option);
 
-	var cmdLine= util.format('node %s %s',
+	var
+	childProcess,
+	/*_error,
+	_stdout = '',
+	_stderr = '',*/
+	cmdLine = util.format('node %s %s',
 		path.relative(process.cwd(), __dirname + '/../bin/jsrevival'),
 		option);
 	//console.error(cmdLine);
-	exec(cmdLine, callback);
+	childProcess = exec(cmdLine, callback);
+	/*childProcess = exec(cmdLine, function(error, stdout, stderr) {
+		_error = error;
+		_stdout += stdout;
+		_stderr += stderr;
+	});
+	childProcess.on('close', function(){
+		callback(_error, _stdout, _stderr);
+	});*/
 	return cmdLine;
 }
 
@@ -398,6 +411,32 @@ describe('jsrevival bin', function() {
 
 					assert.strictEqual(stdout, jslintCOption);
 					assert.strictEqual(stderr, '');
+					done();
+			});
+		});
+	});
+
+	describe('running jsrevival -c option with an invalid jslint config file', function () {
+		it('should have a valid output', function (done) {
+			run_jsrevival(
+				util.format('-v -r cli-hide-valid-no-color -c %s %s',
+					path.relative(process.cwd(), __dirname + '/invalid_jslint_conf.json'),
+					path.relative(process.cwd(), __dirname +'/Rtest')
+					),
+				function (error, stdout, stderr) {
+					var jslintCOption = [
+						'Verbose mode enabled',
+						'jsrevival version: ' + version,
+						'Reporter:  cli-hide-valid-no-color',
+						'Reading jslint config from:  ' + path.relative(process.cwd(), __dirname + '/invalid_jslint_conf.json'),
+						'test/invalid_jslint_conf.json KO',
+						'invalid_jslint_conf.json> (error) line 17(2): Expected \'}\' to match \'{\' from line 1 and instead saw \'maxlen\'. "	"maxlen":  256,"',
+						'invalid_jslint_conf.json> Stopping. (47% scanned).',
+						''// This last line is required
+					].join('\n');
+
+					assert.strictEqual(stdout, jslintCOption);
+					assert.strictEqual(stderr, 'jslint_config_file is not valid!\n');
 					done();
 			});
 		});

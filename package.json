@@ -27,7 +27,6 @@
 	"dependencies": {
 		"posix-getopt": "0.0.x",
 		"ansi": "0.1.x",
-		"jsonlint": "1.x.x",
 		"runnablepool": "0.0.x"
 	},
 	"devDependencies": {
