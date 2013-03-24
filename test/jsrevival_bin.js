@@ -138,11 +138,11 @@ describe('jsrevival bin', function() {
 	describe('passing a directory with -R option on erroneous files', function () {
 		it('should read directories recursively', function (done) {
 			var jslintDirectoryR = [
-				util.format('%s OK', path.relative(process.cwd(),  __dirname + '/Rtest/test.js')),
-				util.format('%s KO', path.relative(process.cwd(),  __dirname + '/Rtest/A/testA.js')),
+				util.format('%s OK', path.relative(process.cwd(), __dirname + '/Rtest/test.js')),
+				util.format('%s KO', path.relative(process.cwd(), __dirname + '/Rtest/A/testA.js')),
 				'testA.js> (error) line 1(6): Expected \';\' and instead saw \'(end)\'. "a = 1"',
 				'testA.js> Stopping. (100% scanned).',
-				util.format('%s KO', path.relative(process.cwd(),  __dirname + '/Rtest/B/testB.js')),
+				util.format('%s KO', path.relative(process.cwd(), __dirname + '/Rtest/B/testB.js')),
 				'testB.js> (error) line 1(6): Expected \';\' and instead saw \'(end)\'. "b = 2"',
 				'testB.js> Stopping. (100% scanned).',
 				'4 errors on 2/3 files',

@@ -2,7 +2,7 @@
 	"author": "Sébastien Dolard <sdolard@gmail.com>",
 	"name": "jsrevival",
 	"description": "A javascript lib and cli linter using JSLint",
-	"version": "0.1.12",
+	"version": "0.1.13",
 	"homepage": "https://github.com/sdolard/node-jsrevival",
 	"keywords": [
 		"jslint",
@@ -15,7 +15,7 @@
 		"url": "git://github.com/sdolard/node-jsrevival.git"
 	},
 	"scripts": {
-		"test": "mocha -R spec",
+		"test": "mocha",
 		"posttest": "bin/jsrevival -r cli-hide-valid  -o \"properties: false, maxlen: 0, debug: false, vars: false, passfail: false\" -R lib/"
 	},
 	"bin": {
@@ -26,12 +26,11 @@
 	},
 	"dependencies": {
 		"posix-getopt": "0.0.x",
-		"colors": "0.6.x",
+		"ansi": "0.1.x",
 		"jsonlint": "1.x.x",
 		"runnablepool": "0.0.x"
 	},
 	"devDependencies": {
-		"vows": "0.6.x",
 		"mocha": "1.8.x"
 	},
 	"optionalDependencies": {}
