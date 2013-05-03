@@ -4,7 +4,7 @@ util = require('util'),
 fs = require('fs'),
 exec = require('child_process').exec,
 path = require('path'),
-JSLINT_VERSION = '2013-03-13',
+JSLINT_VERSION = '2013-05-01',
 version = JSON.parse(fs.readFileSync(__dirname + '/../package.json')).version;
 
 
@@ -19,7 +19,7 @@ function run_jsrevival(option, callback) {
 	cmdLine = util.format('node %s %s',
 		path.relative(process.cwd(), __dirname + '/../bin/jsrevival'),
 		option);
-	//console.error(cmdLine);
+	console.error(cmdLine);
 	childProcess = exec(cmdLine, callback);
 	/*childProcess = exec(cmdLine, function(error, stdout, stderr) {
 		_error = error;
@@ -84,31 +84,29 @@ describe('jsrevival bin', function() {
 		it('should displayed jslint default option to stdout', function (done) {
 			var jslintDefaultOption = [
 				'JSLint default options:',
-				'  anon: true # if the space may be omitted in anonymous function declarations',
+				'  ass: true # if assignment expressions should be allowed',
 				'  bitwise: true # if bitwise operators should be allowed',
 				'  browser: true # if the standard browser globals should be predefined',
+				'  closure: true # if Google Closure idioms should be tolerated',
 				'  continue: true # if the continuation statement should be tolerated',
-				'  css: true # if CSS workarounds should be tolerated',
+				'  couch: true # no help',
 				'  debug: true # if debugger statements should be allowed',
 				'  devel: true # if logging should be allowed (console, alert, etc.)',
 				'  eqeq: true # if == should be allowed',
 				'  es5: true # if ES5 syntax should be allowed',
 				'  evil: true # if eval should be allowed',
 				'  forin: true # if for in statements need not filter',
-				'  fragment: true # if HTML fragments should be allowed',
 				'  indent: 10 # the indentation factor',
 				'  maxerr: 1000 # the maximum number of errors to allow',
 				'  maxlen: 256 # the maximum length of a source line',
 				'  newcap: true # if constructor names capitalization is ignored',
 				'  node: true # if Node.js globals should be predefined',
 				'  nomen: true # if names may have dangling _',
-				'  on: true # if HTML event handlers should be allowed',
 				'  passfail: true # if the scan should stop on first error',
 				'  plusplus: true # if increment/decrement should be allowed',
 				'  properties: true # if all property names must be declared with /*properties*/',
 				'  regexp: true # if the . should be allowed in regexp literals',
 				'  rhino: true # if the Rhino environment globals should be predefined',
-				'  undef: true # if variables can be declared out of order',
 				'  unparam: true # if unused parameters should be tolerated',
 				'  sloppy: true # if the \'use strict\'; pragma is optional',
 				'  stupid: true # if really stupid practices are tolerated',
@@ -137,7 +135,7 @@ describe('jsrevival bin', function() {
 
 			run_jsrevival('-r cli-no-color -j ' +
 				__dirname +
-				'/../contrib/jslint_2012-01-25.js -o "properties: false" '+
+				'/../contrib/jslint_2013-05-01.js -o "properties: false" '+
 				__filename,
 				function (error, stdout, stderr) {
 					assert.strictEqual(error, null);
@@ -163,7 +161,7 @@ describe('jsrevival bin', function() {
 			];
 
 			run_jsrevival(util.format('-r cli-no-color -j %s -R %s',
-					path.relative(process.cwd(), __dirname + '/../contrib/jslint_2012-01-25.js'),
+					path.relative(process.cwd(), __dirname + '/../contrib/jslint_2013-05-01.js'),
 					path.relative(process.cwd(),  __dirname + '/Rtest')),
 					function (error, stdout, stderr) {
 						assert.strictEqual(error.code, 1);
@@ -184,7 +182,7 @@ describe('jsrevival bin', function() {
 				'' // This last line is required
 			].join('\n');
 
-			run_jsrevival('-r cli-no-color -j ' + __dirname + '/../contrib/jslint_2012-01-25.js ' + __dirname +'/Rtest',
+			run_jsrevival('-r cli-no-color -j ' + __dirname + '/../contrib/jslint_2013-05-01.js ' + __dirname +'/Rtest',
 				function (error, stdout, stderr) {
 					assert.strictEqual(error, null);
 					assert.strictEqual(stdout, jslintDirectory);
@@ -211,7 +209,7 @@ describe('jsrevival bin', function() {
 				util.format('%s OK', path.relative(process.cwd(), __dirname +'/jsrevival_bin.js')),
 				'' // This last line is required
 			].join('\n');
-			run_jsrevival('-r cli-no-color -j ' + __dirname + '/../contrib/jslint_2012-01-25.js -o "properties: false, stupid: true" '+ __filename, function (error, stdout, stderr) {
+			run_jsrevival('-r cli-no-color -j ' + __dirname + '/../contrib/jslint_2013-05-01.js -o "properties: false, stupid: true" '+ __filename, function (error, stdout, stderr) {
 				assert.strictEqual(error, null);
 				assert.strictEqual(stdout, jslintOptionOverloadWarnings);
 				assert.strictEqual(stderr, '');
@@ -226,7 +224,7 @@ describe('jsrevival bin', function() {
 				util.format('%s OK', path.relative(process.cwd(), __dirname +'/Rtest/test.js')),
 				'' // This last line is required
 			].join('\n');
-			run_jsrevival('-r cli-no-color -j ' + __dirname + '/../contrib/jslint_2012-01-25.js -o "undef: false" -p "b,c" '+ __dirname + '/Rtest', function (error, stdout, stderr) {
+			run_jsrevival('-r cli-no-color -j ' + __dirname + '/../contrib/jslint_2013-05-01.js -o "undef: false" -p "b,c" '+ __dirname + '/Rtest', function (error, stdout, stderr) {
 				assert.strictEqual(error, null);
 				assert.strictEqual(stdout, jslintPOption);
 				assert.strictEqual(stderr, '');
@@ -237,7 +235,7 @@ describe('jsrevival bin', function() {
 
 	describe('running jsrevival with -s option', function () {
 		it('should stop on first file error', function (done) {
-			run_jsrevival('-r cli-no-color -j ' + __dirname + '/../contrib/jslint_2012-01-25.js -R -s '+ __dirname + '/Rtest', function (error, stdout, stderr) {
+			run_jsrevival('-r cli-no-color -j ' + __dirname + '/../contrib/jslint_2013-05-01.js -R -s '+ __dirname + '/Rtest', function (error, stdout, stderr) {
 				var jslintSOption = [
 					 util.format('%s OK', path.relative(process.cwd(), __dirname +'/Rtest/test.js')),
 
@@ -280,7 +278,7 @@ describe('jsrevival bin', function() {
 
 	describe('running jsrevival with cli-hide-valid reporter', function () {
 		it('should have a valid output', function (done) {
-			run_jsrevival('-r cli-hide-valid-no-color -j ' + __dirname + '/../contrib/jslint_2012-01-25.js -R -s '+ __dirname + '/Rtest', function (error, stdout, stderr) {
+			run_jsrevival('-r cli-hide-valid-no-color -j ' + __dirname + '/../contrib/jslint_2013-05-01.js -R -s '+ __dirname + '/Rtest', function (error, stdout, stderr) {
 				var jslintHideValid = [
 					 // A
 					 util.format('%s KO', path.relative(process.cwd(), __dirname +'/Rtest/A/testA.js')),
@@ -310,7 +308,7 @@ describe('jsrevival bin', function() {
 
 	describe('running jsrevival with sublime-text', function () {
 		it('should have a valid output', function (done) {
-			run_jsrevival('-r sublime-text -j ' + __dirname + '/../contrib/jslint_2012-01-25.js -R -s '+ __dirname + '/Rtest', function (error, stdout, stderr) {
+			run_jsrevival('-r sublime-text -j ' + __dirname + '/../contrib/jslint_2013-05-01.js -R -s '+ __dirname + '/Rtest', function (error, stdout, stderr) {
 				var
 				jslintSublimeText = [
 					'test.js# OK',
@@ -349,7 +347,10 @@ describe('jsrevival bin', function() {
 						'Reading reporter from user environment:  cli-no-color\n',
 						'Reporter:  cli-no-color\n',
 						'JSLINT edition: '+ JSLINT_VERSION + '\n',
-						util.format('%s/test.js OK\n', path.relative(process.cwd(), __dirname +'/Rtest'))
+						'test/Rtest/test.js KO\n',
+						'test.js> (error) line 1(9): \'b\' was used before it was defined. "var a = b;"\n',
+						'test.js> Stopping. (100% scanned).\n',
+						'2 errors on 1/1 file\n'
 					].join('')
 				);
 				assert.strictEqual(stderr, '');
@@ -373,39 +374,42 @@ describe('jsrevival bin', function() {
 						'Reading jslint config from:  '+ path.relative(process.cwd(), __dirname + '/jslint_conf.json'),
 						'JSLint default options overload:',
 						'  predef: foo,bar',
-						'  anon: true is already default value',
+						'  ass: true is already default value',
 						'  bitwise: true is already default value',
 						'  browser: true is already default value',
+						'  closure: true is already default value',
 						'  continue: true is already default value',
-						'  css: true is already default value',
+						'  couch: true is already default value',
 						'  debug: true is already default value',
 						'  devel: true is already default value',
 						'  eqeq: true is already default value',
 						'  es5: true is already default value',
 						'  evil: true is already default value',
 						'  forin: true is already default value',
-						'  fragment: true is already default value',
 						'  indent: 10 is already default value',
 						'  maxerr: 1000 is already default value',
 						'  maxlen: 256 is already default value',
 						'  newcap: true is already default value',
 						'  node: true is already default value',
 						'  nomen: true is already default value',
-						'  on: true is already default value',
 						'  passfail: true is already default value',
 						'  plusplus: true is already default value',
-						'  properties: false',
+						'  properties: true is already default value',
 						'  regexp: true is already default value',
 						'  rhino: true is already default value',
-						'  undef: true is already default value',
 						'  unparam: true is already default value',
 						'  sloppy: true is already default value',
 						'  stupid: true is already default value',
 						'  sub: true is already default value',
+						'  todo: true is already default value',
 						'  vars: true is already default value',
-						'  white: false',
+						'  white: true is already default value',
 						'  windows: true is already default value',
 						'JSLINT edition: ' + JSLINT_VERSION,
+						'test/Rtest/test.js KO',
+						'test.js> (error) line 1(9): \'b\' was used before it was defined. "var a = b;"',
+						'test.js> Stopping. (100% scanned).',
+						'2 errors on 1/1 file',
 						'' // This last line is required
 					].join('\n');
 
@@ -431,7 +435,7 @@ describe('jsrevival bin', function() {
 						'Reading jslint config from:  ' + path.relative(process.cwd(), __dirname + '/invalid_jslint_conf.json'),
 						'test/invalid_jslint_conf.json KO',
 						'invalid_jslint_conf.json> (error) line 17(2): Expected \'}\' to match \'{\' from line 1 and instead saw \'maxlen\'. "	"maxlen":  256,"',
-						'invalid_jslint_conf.json> Stopping. (47% scanned).',
+						'invalid_jslint_conf.json> Stopping. (48% scanned).',
 						''// This last line is required
 					].join('\n');
 
@@ -451,6 +455,10 @@ describe('jsrevival bin', function() {
 						'jsrevival version: ' + version,
 						'Reporter:  cli-hide-valid-no-color',
 						'JSLINT edition: '+ JSLINT_VERSION,
+						'test/Rtest/test.js KO',
+						'test.js> (error) line 1(9): \'b\' was used before it was defined. "var a = b;"',
+						'test.js> Stopping. (100% scanned).',
+						'2 errors on 1/1 file',
 						''
 					].join('\n'));
 				assert.strictEqual(stderr, '');
