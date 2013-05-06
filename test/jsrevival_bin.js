@@ -9,18 +9,20 @@ version = JSON.parse(fs.readFileSync(__dirname + '/../package.json')).version;
 
 
 function run_jsrevival(option, callback) {
+	"use strict";
 	//console.log('option: %s', option);
 
 	var
-	childProcess,
+	//childProcess,
 	/*_error,
 	_stdout = '',
 	_stderr = '',*/
 	cmdLine = util.format('node %s %s',
 		path.relative(process.cwd(), __dirname + '/../bin/jsrevival'),
 		option);
-	console.error(cmdLine);
-	childProcess = exec(cmdLine, callback);
+	//console.error(cmdLine);
+	//childProcess = exec(cmdLine, callback);
+	exec(cmdLine, callback);
 	/*childProcess = exec(cmdLine, function(error, stdout, stderr) {
 		_error = error;
 		_stdout += stdout;
@@ -133,7 +135,7 @@ describe('jsrevival bin', function() {
 				'' // This last line is required
 			].join('\n');
 
-			run_jsrevival('-r cli-no-color -j ' +
+			run_jsrevival('-p "describe,it" -r cli-no-color -j ' +
 				__dirname +
 				'/../contrib/jslint_2013-05-01.js -o "properties: false" '+
 				__filename,
@@ -149,28 +151,36 @@ describe('jsrevival bin', function() {
 	describe('passing a directory with -R option on erroneous files', function () {
 		it('should read directories recursively', function (done) {
 			var jslintDirectoryR = [
-				util.format('%s OK', path.relative(process.cwd(), __dirname + '/Rtest/test.js')),
-				util.format('%s KO', path.relative(process.cwd(), __dirname + '/Rtest/A/testA.js')),
-				'testA.js> (error) line 1(6): Expected \';\' and instead saw \'(end)\'. "a = 1"',
+				// test.js
+				util.format('%s KO', path.relative(process.cwd(), __dirname +'/Rtest/test.js')),
+				'test.js> (error) line 1(9): \'b\' was used before it was defined. "var a = b;"',
+				'test.js> Stopping. (100% scanned).',
+
+				// A
+				util.format('%s KO', path.relative(process.cwd(), __dirname +'/Rtest/A/testA.js')),
+				'testA.js> (error) line 1(1): \'a\' was used before it was defined. "a = 1"',
 				'testA.js> Stopping. (100% scanned).',
-				util.format('%s KO', path.relative(process.cwd(), __dirname + '/Rtest/B/testB.js')),
-				'testB.js> (error) line 1(6): Expected \';\' and instead saw \'(end)\'. "b = 2"',
+
+				// B
+				util.format('%s KO', path.relative(process.cwd(), __dirname +'/Rtest/B/testB.js')),
+				'testB.js> (error) line 1(1): \'b\' was used before it was defined. "b = 2"',
 				'testB.js> Stopping. (100% scanned).',
-				'4 errors on 2/3 files',
+
+				'6 errors on 3/3 files',
 				'' // This last line is required
 			];
 
 			run_jsrevival(util.format('-r cli-no-color -j %s -R %s',
-					path.relative(process.cwd(), __dirname + '/../contrib/jslint_2013-05-01.js'),
-					path.relative(process.cwd(),  __dirname + '/Rtest')),
-					function (error, stdout, stderr) {
-						assert.strictEqual(error.code, 1);
-						var out = stdout.split('\n');
-						out.forEach(function(line) {
-							assert(jslintDirectoryR.indexOf(line) !== -1);
-						});
-						assert.strictEqual(stderr, '');
-						done();
+				path.relative(process.cwd(), __dirname + '/../contrib/jslint_2013-05-01.js'),
+				path.relative(process.cwd(),  __dirname + '/Rtest')),
+				function (error, stdout, stderr) {
+					assert.strictEqual(error.code, 1);
+					var out = stdout.split('\n');
+					out.forEach(function(line) {
+						assert(jslintDirectoryR.indexOf(line) !== -1);
+					});
+					assert.strictEqual(stderr, '');
+					done();
 			});
 		});
 	});
@@ -178,13 +188,16 @@ describe('jsrevival bin', function() {
 	describe('passing a directory without -R option', function () {
 		it('should not read directories recursively', function (done) {
 			var jslintDirectory = [
-				util.format('%s OK', path.relative(process.cwd(), __dirname +'/Rtest/test.js')),
+				util.format('%s KO', path.relative(process.cwd(), __dirname +'/Rtest/test.js')),
+				'test.js> (error) line 1(9): \'b\' was used before it was defined. "var a = b;"',
+				'test.js> Stopping. (100% scanned).',
+				'2 errors on 1/1 file',
 				'' // This last line is required
 			].join('\n');
 
 			run_jsrevival('-r cli-no-color -j ' + __dirname + '/../contrib/jslint_2013-05-01.js ' + __dirname +'/Rtest',
 				function (error, stdout, stderr) {
-					assert.strictEqual(error, null);
+					assert.strictEqual(error.code, 1);
 					assert.strictEqual(stdout, jslintDirectory);
 					assert.strictEqual(stderr, '');
 					done();
@@ -204,12 +217,14 @@ describe('jsrevival bin', function() {
 	});
 
 	describe('running jsrevival with -o option and overloading a param with another value than original', function () {
-		it('should warns', function (done) {
+		it('should not warns', function (done) {
+
 			var jslintOptionOverloadWarnings = [
 				util.format('%s OK', path.relative(process.cwd(), __dirname +'/jsrevival_bin.js')),
 				'' // This last line is required
 			].join('\n');
-			run_jsrevival('-r cli-no-color -j ' + __dirname + '/../contrib/jslint_2013-05-01.js -o "properties: false, stupid: true" '+ __filename, function (error, stdout, stderr) {
+
+			run_jsrevival('-p "describe,it" -r cli-no-color -j ' + __dirname + '/../contrib/jslint_2013-05-01.js -o "properties: false, stupid: true" '+ __filename, function (error, stdout, stderr) {
 				assert.strictEqual(error, null);
 				assert.strictEqual(stdout, jslintOptionOverloadWarnings);
 				assert.strictEqual(stderr, '');
@@ -224,7 +239,7 @@ describe('jsrevival bin', function() {
 				util.format('%s OK', path.relative(process.cwd(), __dirname +'/Rtest/test.js')),
 				'' // This last line is required
 			].join('\n');
-			run_jsrevival('-r cli-no-color -j ' + __dirname + '/../contrib/jslint_2013-05-01.js -o "undef: false" -p "b,c" '+ __dirname + '/Rtest', function (error, stdout, stderr) {
+			run_jsrevival('-r cli-no-color -j ' + __dirname + '/../contrib/jslint_2013-05-01.js -o "unparam: false" -p "b,c" '+ __dirname + '/Rtest', function (error, stdout, stderr) {
 				assert.strictEqual(error, null);
 				assert.strictEqual(stdout, jslintPOption);
 				assert.strictEqual(stderr, '');
@@ -237,16 +252,18 @@ describe('jsrevival bin', function() {
 		it('should stop on first file error', function (done) {
 			run_jsrevival('-r cli-no-color -j ' + __dirname + '/../contrib/jslint_2013-05-01.js -R -s '+ __dirname + '/Rtest', function (error, stdout, stderr) {
 				var jslintSOption = [
-					 util.format('%s OK', path.relative(process.cwd(), __dirname +'/Rtest/test.js')),
+					util.format('%s KO', path.relative(process.cwd(), __dirname +'/Rtest/test.js')),
+					'test.js> (error) line 1(9): \'b\' was used before it was defined. "var a = b;"',
+					'test.js> Stopping. (100% scanned).',
 
-					 // A
-					 util.format('%s KO', path.relative(process.cwd(), __dirname +'/Rtest/A/testA.js')),
-					'testA.js> (error) line 1(6): Expected \';\' and instead saw \'(end)\'. "a = 1"',
+					// A
+					util.format('%s KO', path.relative(process.cwd(), __dirname +'/Rtest/A/testA.js')),
+					'testA.js> (error) line 1(1): \'a\' was used before it was defined. "a = 1"',
 					'testA.js> Stopping. (100% scanned).',
 
 					// B
 					util.format('%s KO', path.relative(process.cwd(), __dirname +'/Rtest/B/testB.js')),
-					'testB.js> (error) line 1(6): Expected \';\' and instead saw \'(end)\'. "b = 2"',
+					'testB.js> (error) line 1(6): \'b\' was used before it was defined. "b = 2"',
 					'testB.js> Stopping. (100% scanned).',
 
 					// 2 possible end
@@ -280,14 +297,19 @@ describe('jsrevival bin', function() {
 		it('should have a valid output', function (done) {
 			run_jsrevival('-r cli-hide-valid-no-color -j ' + __dirname + '/../contrib/jslint_2013-05-01.js -R -s '+ __dirname + '/Rtest', function (error, stdout, stderr) {
 				var jslintHideValid = [
-					 // A
-					 util.format('%s KO', path.relative(process.cwd(), __dirname +'/Rtest/A/testA.js')),
-					'testA.js> (error) line 1(6): Expected \';\' and instead saw \'(end)\'. "a = 1"',
+
+					util.format('%s KO', path.relative(process.cwd(), __dirname +'/Rtest/test.js')),
+					'test.js> (error) line 1(9): \'b\' was used before it was defined. "var a = b;"',
+					'test.js> Stopping. (100% scanned).',
+
+					// A
+					util.format('%s KO', path.relative(process.cwd(), __dirname +'/Rtest/A/testA.js')),
+					'testA.js> (error) line 1(1): \'a\' was used before it was defined. "a = 1"',
 					'testA.js> Stopping. (100% scanned).',
 
 					// B
 					util.format('%s KO', path.relative(process.cwd(), __dirname +'/Rtest/B/testB.js')),
-					'testB.js> (error) line 1(6): Expected \';\' and instead saw \'(end)\'. "b = 2"',
+					'testB.js> (error) line 1(6): \'b\' was used before it was defined. "b = 2"',
 					'testB.js> Stopping. (100% scanned).',
 
 					// 2 possible end
