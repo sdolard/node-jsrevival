@@ -16,7 +16,7 @@
 	},
 	"scripts": {
 		"test": "mocha",
-		"posttest": "bin/jsrevival -r cli-hide-valid  -o \"properties: false, maxlen: 0, debug: false, vars: false, passfail: false\" -R lib/"
+		"posttest": "bin/jsrevival -r cli-hide-valid -o \"properties: false, maxlen: 0, debug: false, vars: false, passfail: false\" -R lib/"
 	},
 	"bin": {
 		"jsrevival": "./bin/jsrevival"
@@ -25,7 +25,7 @@
 		"node": ">= 0.8.0"
 	},
 	"dependencies": {
-		"posix-getopt": "0.0.x",
+		"commander": "1.1.1",
 		"ansi": "0.1.x",
 		"runnablepool": "0.0.x"
 	},
