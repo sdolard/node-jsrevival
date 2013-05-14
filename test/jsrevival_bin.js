@@ -7,7 +7,7 @@ path = require('path'),
 JSLINT_VERSION = '2013-05-01',
 version = JSON.parse(fs.readFileSync(__dirname + '/../package.json')).version;
 
-
+/*jslint unparam: true*/
 function run_jsrevival(option, callback) {
 	"use strict";
 	//console.log('option: %s', option);

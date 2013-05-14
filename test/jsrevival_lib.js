@@ -2,6 +2,7 @@ var
 assert = require('assert'),
 jsrevival = require('../lib/jsrevival');
 
+/*jslint unparam: true*/
 describe('jsrevival lib', function(){
 	describe ('a jsrevival instance', function() {
 		it ('should call `ready` event with jslint edition param', function(done){
