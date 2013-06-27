@@ -4,11 +4,11 @@ util = require('util'),
 fs = require('fs'),
 exec = require('child_process').exec,
 path = require('path'),
-JSLINT_VERSION = '2013-05-01',
+JSLINT_VERSION = '2013-05-31',
 version = JSON.parse(fs.readFileSync(__dirname + '/../package.json')).version;
 
 /*jslint unparam: true*/
-function run_jsrevival(option, callback) {
+function run_jsrevival(option, callback, dump) {
 	"use strict";
 	//console.log('option: %s', option);
 
@@ -20,7 +20,9 @@ function run_jsrevival(option, callback) {
 	cmdLine = util.format('node %s %s',
 		path.relative(process.cwd(), __dirname + '/../bin/jsrevival'),
 		option);
-	//console.error(cmdLine);
+	if (dump) {
+		console.error(cmdLine);
+	}
 	//childProcess = exec(cmdLine, callback);
 	exec(cmdLine, callback);
 	/*childProcess = exec(cmdLine, function(error, stdout, stderr) {
@@ -114,7 +116,6 @@ describe('jsrevival bin', function() {
 				'  todo: true # if TODO comments are tolerated',
 				'  vars: true # if multiple var statements per function should be allowed',
 				'  white: true # if sloppy whitespace is tolerated',
-				'  windows: true # if MS Windows-specific globals should be predefined',
 				'' // This last line is required
 				].join('\n');
 			run_jsrevival('-m', function (error, stdout, stderr) {
@@ -424,7 +425,6 @@ describe('jsrevival bin', function() {
 						'  todo: true is already default value',
 						'  vars: true is already default value',
 						'  white: true is already default value',
-						'  windows: true is already default value',
 						'JSLINT edition: ' + JSLINT_VERSION,
 						'test/Rtest/test.js KO',
 						'test.js> (error) line 1(9): \'b\' was used before it was defined. "var a = b;"',
