@@ -25,11 +25,11 @@
 		"node": ">= 0.8.0"
 	},
 	"dependencies": {
-		"commander": "1.1.1",
-		"ansi": "0.1.x",
+		"ansi": "0.2.x",
+		"commander": "1.3.x",
 		"runnablepool": "0.0.x"
 	},
 	"devDependencies": {
-		"mocha": "1.8.x"
+		"mocha": "1.12.x"
 	}
 }
