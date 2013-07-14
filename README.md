@@ -1,18 +1,10 @@
 # node-jsrevival [![Build Status](https://secure.travis-ci.org/sdolard/node-jsrevival.png?branch=master)](http://travis-ci.org/sdolard/node-jsrevival)[![Build Dependency](https://david-dm.org/sdolard/node-jsrevival.png)](https://david-dm.org/sdolard/node-jsrevival)
-A javascript lib and cli linter using JSLint
+A multi process javascript lib and cli linter using JSLint
 
 
 * http://nodejs.org
 
-## Installation with npm
-### Installing npm (node package manager: http://npmjs.org/)
-
-```
-curl http://npmjs.org/install.sh || sh
-```
-
 ### Installing jsrevival
-
 ```
 [sudo] npm install [-g] jsrevival
 ```
@@ -21,28 +13,24 @@ curl http://npmjs.org/install.sh || sh
 ## Usage
 ### CLI
 ```
-jsrevival [-j jslint_file] [ [ [-o jslint_options] [-p prefef] ] || [–c jslint_config_file] ] [-s] [–m] [–v] [-R] [–q]  [ [-r reporterName] || [-e] ] [–h] files directories ...
 jsrevival: a JSLint cli.
-Options:
-  j: jslint file (overload default)
-  o: jslint option (overload default). Ex: -o "unparam: true, vars: false..."
-  p: predefined names, which will be used to declare global variables. Ex: -p "foo, bar"
-  c: jslint config file (JSON expected)
-  m: display jslint default option
-  v: verbose mode
-  R: run recursively on directories
-  s: stop on first file error
-  q: quiet. Ex: to use jsrevival in shell script
-  e: read reporter config from JSREVIVAL_REPORTER user variable environment  (stronger than -r option)
-  h: display this help
-  r: reporter (default: cli)
-     reporter list:
-      - cli
-      - cli-hide-valid
-      - cli-no-color
-      - cli-hide-valid-no-color
-      - sublime-text
+  Usage: jsrevival [options] <file directory ...>
 
+  Options:
+
+    -h, --help                       output usage information
+    -V, --version                    output the version number
+    -j, --jslint_file <file>         overload default
+    -o, --jslint_options <options>   overload default. Ex: -o "unparam: false, vars: false"
+    -m, --display_default_options    display jslint default options
+    -p, --predefined_names <names>   which will be used to declare global variables. Ex: -p "foo, bar"
+    -c, --jslint_config_file <file>  jslint config file (JSON expected)
+    -q, --quiet                      disable writing to std*. Ex: to use jsrevival in shell script
+    -R, --recursive                  run recursively on directories
+    -r, --reporter <name>            cli (default), cli-hide-valid, cli-no-color, cli-hide-valid-no-color, sublime-text
+    -s, --stop_on_first_error        stop on first file error
+    -e, --reporter_from_env          read reporter config from JSREVIVAL_REPORTER user variable environment (stronger than -r option)
+    -v, --verbose                    enable verbose mode
 
 ```
 
