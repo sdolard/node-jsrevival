@@ -29,6 +29,5 @@
 	"sub": true,
 	"todo": true,
 	"vars": true,
-	"white": true,
-	"windows": true
+	"white": true
 }
