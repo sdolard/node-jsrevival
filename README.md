@@ -1,14 +1,14 @@
-# node-jsrevival [![Build Status](https://secure.travis-ci.org/sdolard/node-jsrevival.png?branch=master)](http://travis-ci.org/sdolard/node-jsrevival)
+# node-jsrevival [![Build Status](https://secure.travis-ci.org/sdolard/node-jsrevival.png?branch=master)](http://travis-ci.org/sdolard/node-jsrevival)[![Build Dependency](https://david-dm.org/sdolard/node-jsrevival)](https://david-dm.org/sdolard/node-jsrevival.png)
 A javascript lib and cli linter using JSLint
 
 
 * http://nodejs.org
 
-## Installation with npm 
+## Installation with npm
 ### Installing npm (node package manager: http://npmjs.org/)
 
 ```
-curl http://npmjs.org/install.sh || sh	
+curl http://npmjs.org/install.sh || sh
 ```
 
 ### Installing jsrevival
@@ -21,7 +21,7 @@ curl http://npmjs.org/install.sh || sh
 ## Usage
 ### CLI
 ```
-jsrevival [-j jslint_file] [ [ [-o jslint_options] [-p prefef] ] || [–c jslint_config_file] ] [-s] [–m] [–v] [-R] [–q]  [ [-r reporterName] || [-e] ] [–h] files directories ... 
+jsrevival [-j jslint_file] [ [ [-o jslint_options] [-p prefef] ] || [–c jslint_config_file] ] [-s] [–m] [–v] [-R] [–q]  [ [-r reporterName] || [-e] ] [–h] files directories ...
 jsrevival: a JSLint cli.
 Options:
   j: jslint file (overload default)
@@ -46,7 +46,7 @@ Options:
 
 ```
 
-### Lib: basic 
+### Lib: basic
 ```javascript
 var
 jsrevival = require('../lib/jsrevival'),
@@ -75,9 +75,9 @@ linter.on('lint', function (errors, filename) {
 
 
 
-## Exports 
+## Exports
 
-### JSRevival class 
+### JSRevival class
 ```
 /**
 * @class
@@ -90,7 +90,7 @@ linter.on('lint', function (errors, filename) {
 * @event ready({string} JSLINT edition) // class has load jslint.js > lint method can be called there
 * @event lint({array} errors, {string} filepath) // lint what ever you want
 * @event end // there is no more things to lint
-* @event error({Error} err) 
+* @event error({Error} err)
 */
 ```
 
