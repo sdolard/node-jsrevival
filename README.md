@@ -1,4 +1,4 @@
-# node-jsrevival [![Build Status](https://secure.travis-ci.org/sdolard/node-jsrevival.png?branch=master)](http://travis-ci.org/sdolard/node-jsrevival)[![Build Dependency](https://david-dm.org/sdolard/node-jsrevival)](https://david-dm.org/sdolard/node-jsrevival.png)
+# node-jsrevival [![Build Status](https://secure.travis-ci.org/sdolard/node-jsrevival.png?branch=master)](http://travis-ci.org/sdolard/node-jsrevival)[![Build Dependency](https://david-dm.org/sdolard/node-jsrevival.png)](https://david-dm.org/sdolard/node-jsrevival)
 A javascript lib and cli linter using JSLint
 
 
