@@ -2,7 +2,7 @@
 	"author": "Sébastien Dolard <sdolard@gmail.com>",
 	"name": "jsrevival",
 	"description": "A multi process javascript lib and cli linter using JSLint",
-	"version": "0.2.3",
+	"version": "0.2.4",
 	"homepage": "https://github.com/sdolard/node-jsrevival",
 	"keywords": [
 		"jslint",

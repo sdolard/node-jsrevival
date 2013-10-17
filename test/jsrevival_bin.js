@@ -1,13 +1,13 @@
+/*jslint stupid: true, unparam: true */
 var
 assert = require('assert'),
 util = require('util'),
 fs = require('fs'),
 exec = require('child_process').exec,
 path = require('path'),
-JSLINT_VERSION = '2013-07-02',
+JSLINT_VERSION = '2013-09-20',
 version = JSON.parse(fs.readFileSync(__dirname + '/../package.json')).version;
 
-/*jslint unparam: true*/
 function run_jsrevival(option, callback, dump) {
 	"use strict";
 	//console.log('option: %s', option);
