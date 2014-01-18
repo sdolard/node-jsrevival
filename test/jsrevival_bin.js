@@ -13,26 +13,25 @@ function run_jsrevival(option, callback, dump) {
 	//console.log('option: %s', option);
 
 	var
-	//childProcess,
-	/*_error,
-	_stdout = '',
-	_stderr = '',*/
+	childProcess,
 	cmdLine = util.format('node %s %s',
 		path.relative(process.cwd(), __dirname + '/../bin/jsrevival'),
-		option);
+		option ? path.normalize(option): option);
 	if (dump) {
 		console.error(cmdLine);
+		childProcess = exec(cmdLine, callback);
+		childProcess.on('error', function(error){
+			console.log("cp error %s", error);
+		});
+		childProcess.on('exit', function(code, signal){
+			console.log("cp exit %d, %s", code, signal);
+		});
+		childProcess.on('close', function(code, signal){
+			console.log("cp close %d, %s", code, signal);
+		});
+	} else {
+		exec(cmdLine, callback);
 	}
-	//childProcess = exec(cmdLine, callback);
-	exec(cmdLine, callback);
-	/*childProcess = exec(cmdLine, function(error, stdout, stderr) {
-		_error = error;
-		_stdout += stdout;
-		_stderr += stderr;
-	});
-	childProcess.on('close', function(){
-		callback(_error, _stdout, _stderr);
-	});*/
 	return cmdLine;
 }
 
@@ -123,7 +122,7 @@ describe('jsrevival bin', function() {
 				assert.strictEqual(stdout, jslintDefaultOption);
 				assert.strictEqual(stderr, '');
 				done();
-			});
+			}, true);
 		});
 	});
 
@@ -285,16 +284,19 @@ describe('jsrevival bin', function() {
 		it('should stop', function (done) {
 			run_jsrevival('-r øÇ¡«¶{‘“ë '+ __dirname + '/Rtest', function (error, stdout, stderr) {
 				assert.strictEqual(error.code, 1);
+				console.log(util.format('error: "%j"', error));
+				console.log(util.format('stdout: "%s"', stdout));
+				console.log(util.format('stderr: "%s"', stderr));
 				assert.strictEqual(stdout, '');
-				assert.strictEqual(stderr, 'Reporter not found: øÇ¡«¶{‘“ë\n');
+				assert.strictEqual(stderr, 'Reporter not found: øÇ¡«¶{‘“ë');
 				done();
-			});
+			}, true);
 		});
 	});
 
 	describe('running jsrevival with cli-hide-valid reporter', function () {
 		it('should have a valid output', function (done) {
-			run_jsrevival('-r cli-hide-valid-no-color -j ' + __dirname + '/../contrib/jslint_2013-05-01.js -R -s '+ __dirname + '/Rtest', function (error, stdout, stderr) {
+			run_jsrevival('-r cli-hide-valid-no-color -j ' + __dirname + '/../contrib/jslint_2013-05-01.js -R -s ' + __dirname + '/Rtest', function (error, stdout, stderr) {
 				var jslintHideValid = [
 
 					util.format('%s KO', path.relative(process.cwd(), __dirname +'/Rtest/test.js')),
@@ -368,7 +370,7 @@ describe('jsrevival bin', function() {
 						'Reading reporter from user environment:  cli-no-color\n',
 						'Reporter:  cli-no-color\n',
 						'JSLINT edition: '+ JSLINT_VERSION + '\n',
-						'test/Rtest/test.js KO\n',
+						path.normalize('test/Rtest/test.js KO\n'),
 						'test.js> (error) line 1(9): \'b\' was used before it was defined. "var a = b;"\n',
 						'test.js> Stopping. (100% scanned).\n',
 						'2 errors on 1/1 file\n'
@@ -426,7 +428,7 @@ describe('jsrevival bin', function() {
 						'  vars: true is already default value',
 						'  white: true is already default value',
 						'JSLINT edition: ' + JSLINT_VERSION,
-						'test/Rtest/test.js KO',
+						path.normalize('test/Rtest/test.js KO'),
 						'test.js> (error) line 1(9): \'b\' was used before it was defined. "var a = b;"',
 						'test.js> Stopping. (100% scanned).',
 						'2 errors on 1/1 file',
@@ -453,7 +455,7 @@ describe('jsrevival bin', function() {
 						'jsrevival version: ' + version,
 						'Reporter:  cli-hide-valid-no-color',
 						'Reading jslint config from:  ' + path.relative(process.cwd(), __dirname + '/invalid_jslint_conf.json'),
-						'test/invalid_jslint_conf.json KO',
+						path.normalize('test/invalid_jslint_conf.json KO'),
 						'invalid_jslint_conf.json> (error) line 17(2): Expected \'}\' to match \'{\' from line 1 and instead saw \'maxlen\'. "	"maxlen":  256,"',
 						'invalid_jslint_conf.json> Stopping. (48% scanned).',
 						''// This last line is required
@@ -475,7 +477,7 @@ describe('jsrevival bin', function() {
 						'jsrevival version: ' + version,
 						'Reporter:  cli-hide-valid-no-color',
 						'JSLINT edition: '+ JSLINT_VERSION,
-						'test/Rtest/test.js KO',
+						path.normalize('test/Rtest/test.js KO'),
 						'test.js> (error) line 1(9): \'b\' was used before it was defined. "var a = b;"',
 						'test.js> Stopping. (100% scanned).',
 						'2 errors on 1/1 file',
