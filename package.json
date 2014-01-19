@@ -16,7 +16,7 @@
 	},
 	"scripts": {
 		"test": "mocha",
-		"posttest": "bin/jsrevival -r cli-hide-valid -o \"properties: false, maxlen: 0, debug: false, vars: false, passfail: false, unparam: false\" -p \"describe,it\" -R example/ lib/ test/jsrevival_lib.js test/jsrevival_bin.js"
+		"posttest": "node bin/jsrevival -v -r cli-hide-valid -o \"properties:false,maxlen:0,debug:false,vars:false,passfail:false,unparam:false\" -p \"describe,it\" -R example/ lib/ test/jsrevival_lib.js test/jsrevival_bin.js"
 	},
 	"bin": {
 		"jsrevival": "./bin/jsrevival"

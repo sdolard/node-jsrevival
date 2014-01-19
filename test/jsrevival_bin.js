@@ -122,7 +122,7 @@ describe('jsrevival bin', function() {
 				assert.strictEqual(stdout, jslintDefaultOption);
 				assert.strictEqual(stderr, '');
 				done();
-			}, true);
+			});
 		});
 	});
 
@@ -284,13 +284,10 @@ describe('jsrevival bin', function() {
 		it('should stop', function (done) {
 			run_jsrevival('-r øÇ¡«¶{‘“ë '+ __dirname + '/Rtest', function (error, stdout, stderr) {
 				assert.strictEqual(error.code, 1);
-				console.log(util.format('error: "%j"', error));
-				console.log(util.format('stdout: "%s"', stdout));
-				console.log(util.format('stderr: "%s"', stderr));
 				assert.strictEqual(stdout, '');
 				assert.strictEqual(stderr, 'Reporter not found: øÇ¡«¶{‘“ë\n');
 				done();
-			}, true);
+			});
 		});
 	});
 
