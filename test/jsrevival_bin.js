@@ -288,7 +288,7 @@ describe('jsrevival bin', function() {
 				console.log(util.format('stdout: "%s"', stdout));
 				console.log(util.format('stderr: "%s"', stderr));
 				assert.strictEqual(stdout, '');
-				assert.strictEqual(stderr, 'Reporter not found: øÇ¡«¶{‘“ë');
+				assert.strictEqual(stderr, 'Reporter not found: øÇ¡«¶{‘“ë\n');
 				done();
 			}, true);
 		});
